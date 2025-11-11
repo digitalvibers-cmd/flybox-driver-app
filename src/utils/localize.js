@@ -1,7 +1,7 @@
 import { getLangNameFromCode } from 'language-name-map';
 import { getString } from '../utils/storage';
 import { get, navigatorConfig } from '../utils';
-import en from '../../translations/en.json';
+import en from '../locales/en.js';
 // import mn from '../../translations/mn.json';
 import I18n from 'react-native-i18n';
 

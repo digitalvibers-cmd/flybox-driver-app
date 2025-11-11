@@ -7,6 +7,7 @@ import { Text } from 'tamagui';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import HeaderButton from '../../components/HeaderButton';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 export const Boot = {
     screen: BootScreen,
@@ -29,12 +30,13 @@ export const LocationPermission = {
 export const InstanceLink = {
     screen: InstanceLinkScreen,
     options: ({ navigation }) => {
+        const { t } = useLanguage();
         return {
             headerTitle: '',
             presentation: 'modal',
             headerLeft: (props) => (
                 <Text color='$textPrimary' fontSize={20} fontWeight='bold'>
-                    Connection Config
+                    {t('CoreStack.connectionConfig')}
                 </Text>
             ),
             headerRight: (props) => <HeaderButton icon={faTimes} onPress={() => navigation.goBack()} />,

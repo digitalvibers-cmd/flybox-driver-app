@@ -18,6 +18,7 @@ import MultipleCustomerAvatars from './MultipleCustomerAvatars';
 import LoadingText from './LoadingText';
 import LoadingOverlay from './LoadingOverlay';
 import Badge from './Badge';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const INFO_FIELD_VALUE_MIN_HEIGHT = 30;
 export const AdhocOrderCard = ({ order, onPress, onAccept, onDismiss }) => {
@@ -27,6 +28,7 @@ export const AdhocOrderCard = ({ order, onPress, onAccept, onDismiss }) => {
     const { location } = useLocation();
     const { isDarkMode } = useAppTheme();
     const [isAccepting, setIsAccepting] = useState(false);
+    const { t } = useLanguage();
 
     const destination = useMemo(() => {
         const pickup = order.getAttribute('payload.pickup');
@@ -44,13 +46,13 @@ export const AdhocOrderCard = ({ order, onPress, onAccept, onDismiss }) => {
     }, [location, destination]);
 
     const handleAccept = useCallback(async () => {
-        Alert.alert('Accept Ad-Hoc order?', 'By accepting this ad-hoc order it will become assigned to you and the order will start immediatley.', [
+        Alert.alert(t('common.cancel'), t('AdhocOrderCard.byAcceptingThisAdHocOrderItWillBecomeAssignedToYouAndTheOrderWillStartImmediatley'), [
             {
-                text: 'Cancel',
+                text: t('common.cancel'),
                 style: 'cancel',
             },
             {
-                text: 'Accept',
+                text: t('AdhocOrderCard.acceptOrder'),
                 onPress: async () => {
                     setIsAccepting(true);
 
@@ -70,13 +72,13 @@ export const AdhocOrderCard = ({ order, onPress, onAccept, onDismiss }) => {
     }, [order, setIsAccepting]);
 
     const handleDismiss = useCallback(() => {
-        Alert.alert('Dismiss Ad-Hoc order?', 'By dimissing this ad-hoc order it will no longer display as an available order.', [
+        Alert.alert(t('common.cancel'), t('AdhocOrderCard.byDimissingThisAdHocOrderItWillNoLongerDisplayAsAnAvailableOrder'), [
             {
-                text: 'Cancel',
+                text: t('common.cancel'),
                 style: 'cancel',
             },
             {
-                text: 'OK',
+                text: t('common.close'),
                 onPress: () => {
                     if (typeof onDismiss === 'function') {
                         onDismiss(order);
@@ -88,7 +90,7 @@ export const AdhocOrderCard = ({ order, onPress, onAccept, onDismiss }) => {
 
     return (
         <Pressable onPress={onPress}>
-            <LoadingOverlay isVisible={isAccepting} text='Accepting and assigning order...' />
+            <LoadingOverlay isVisible={isAccepting} text={t('AdhocOrderCard.acceptingAndAssigningOrder')} />
             <YStack bg='$info' borderRadius='$4' borderWidth={1} borderColor='$infoBorder'>
                 <YStack height={150} borderBottomWidth={1} borderColor='$infoBorder'>
                     <LiveOrderRoute
@@ -110,7 +112,7 @@ export const AdhocOrderCard = ({ order, onPress, onAccept, onDismiss }) => {
                 <YStack flex={1} borderRadius='$4'>
                     <XStack bg='$blue-800' alignItems='center' px='$3' py='$3' mb='$3' borderBottomWidth={1} borderColor='$infoBorder'>
                         <Text color='$infoText' fontSize='$6' fontWeight='bold'>
-                            Order Available Nearby: {formatMeters(distance)}
+                            {t('AdhocOrderCard.orderAvailableNearby')}: {formatMeters(distance)}
                         </Text>
                     </XStack>
                     <XStack alignItems='start' justifyContent='space-between' px='$3' mb='$3'>
@@ -126,7 +128,7 @@ export const AdhocOrderCard = ({ order, onPress, onAccept, onDismiss }) => {
                                     {formatWhatsAppTimestamp(new Date(order.getAttribute('created_at')))}
                                 </Text>
                                 <Text color='$textPrimary' fontSize={13}>
-                                    {formatMeters(distance)} away
+                                    {formatMeters(distance)} {t('AdhocOrderCard.away')}
                                 </Text>
                             </YStack>
                         </XStack>
@@ -139,7 +141,7 @@ export const AdhocOrderCard = ({ order, onPress, onAccept, onDismiss }) => {
                             icon={faLocationDot}
                             iconColor={theme['$textPrimary'].val}
                             waypoint={destination.serialize()}
-                            title='Pickup Destination'
+                            title={t('AdhocOrderCard.pickupDestination')}
                             titleStyle={{ fontWeight: 'bold', fontSize: 14, textTransform: 'uppercase' }}
                         />
                     </YStack>
@@ -147,7 +149,7 @@ export const AdhocOrderCard = ({ order, onPress, onAccept, onDismiss }) => {
                         <YStack flex={1}>
                             <Button onPress={handleAccept} bg='$success' borderColor='$successBorder' borderWidth={1} disabled={isAccepting}>
                                 <Button.Icon>{isAccepting ? <Spinner color='$successText' /> : <FontAwesomeIcon icon={faCheck} color={theme['$successText'].val} />}</Button.Icon>
-                                <Button.Text color='$successText'>Accept Order</Button.Text>
+                                <Button.Text color='$successText'>{t('AdhocOrderCard.acceptOrder')}</Button.Text>
                             </Button>
                         </YStack>
                         <YStack flex={1}>
@@ -155,7 +157,7 @@ export const AdhocOrderCard = ({ order, onPress, onAccept, onDismiss }) => {
                                 <Button.Icon>
                                     <FontAwesomeIcon icon={faBan} color={theme['$errorText'].val} />
                                 </Button.Icon>
-                                <Button.Text color='$errorText'>Dismiss Order</Button.Text>
+                                <Button.Text color='$errorText'>{t('AdhocOrderCard.dismissOrder')}</Button.Text>
                             </Button>
                         </YStack>
                     </XStack>

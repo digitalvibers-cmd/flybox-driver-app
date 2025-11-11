@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { Dimensions, Platform } from 'react-native';
+import { Dimensions, Platform, Alert } from 'react-native';
 import { YStack, XStack, Button, Text, Image, Card, ScrollView } from 'tamagui';
 import { Camera, useCameraDevice, useFrameProcessor } from 'react-native-vision-camera';
 import type { Camera as CameraRef } from 'react-native-vision-camera';
@@ -7,6 +7,7 @@ import { CameraRoll } from '@react-native-camera-roll/camera-roll';
 import RNFS from 'react-native-fs';
 import useDimensions from '../hooks/use-dimensions';
 import { toast, ToastPosition } from '../utils/toast';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const MENU_BAR_HEIGHT = 160;
 
@@ -19,6 +20,7 @@ interface CameraCaptureScreenProps {
 }
 
 const CameraCapture = ({ onDone }: CameraCaptureScreenProps) => {
+    const { t } = useLanguage();
     const cameraRef = useRef<CameraRef>(null);
     const device = useCameraDevice('back');
     const { screenHeight } = useDimensions();
@@ -46,7 +48,7 @@ const CameraCapture = ({ onDone }: CameraCaptureScreenProps) => {
                 flash: 'off',
                 qualityPrioritization: 'balanced',
             });
-            toast.info('Photo captured.', { position: ToastPosition.TOP });
+            toast.info(t('CameraCapture.photoCaptured'), { position: ToastPosition.TOP });
 
             const filePath = (Platform.OS === 'ios' ? '' : 'file://') + photo.path;
             const base64Data = await RNFS.readFile(filePath, 'base64');
@@ -59,7 +61,7 @@ const CameraCapture = ({ onDone }: CameraCaptureScreenProps) => {
         } catch (error) {
             console.warn('Error taking photo:', error);
         }
-    }, []);
+    }, [t]);
 
     // Let the user pick images from their camera roll
     const handleSelectFromCameraRoll = useCallback(async () => {
@@ -74,13 +76,13 @@ const CameraCapture = ({ onDone }: CameraCaptureScreenProps) => {
             // For simplicity, let's just take the first photo (in a real scenario you'd present a UI).
             if (photosFromGallery.edges.length > 0) {
                 const { node } = photosFromGallery.edges[0];
-                toast.info('Photo added from gallery.', { position: ToastPosition.TOP });
+                toast.info(t('CameraCapture.photoAddedFromGallery'), { position: ToastPosition.TOP });
                 setPhotos((prev) => [...prev, { uri: node.image.uri }]);
             }
         } catch (error) {
             console.warn('Error selecting from camera roll:', error);
         }
-    }, []);
+    }, [t]);
 
     const openGalleryOverlay = () => setShowGalleryOverlay(true);
     const closeGalleryOverlay = () => setShowGalleryOverlay(false);
@@ -102,7 +104,7 @@ const CameraCapture = ({ onDone }: CameraCaptureScreenProps) => {
     if (!device || !hasPermission) {
         return (
             <YStack flex={1} justifyContent='center' alignItems='center'>
-                <Text color='$textSecondary'>Loading camera or awaiting permission...</Text>
+                <Text color='$textSecondary'>{t('CameraCapture.loadingCameraOrAwaitingPermission')}</Text>
             </YStack>
         );
     }
@@ -115,21 +117,21 @@ const CameraCapture = ({ onDone }: CameraCaptureScreenProps) => {
             <YStack width='100%' height={MENU_BAR_HEIGHT} bg='$background' py='$3' space='$4' borderTopWidth={1} borderColor='$borderColorWithShadow'>
                 <XStack ai='center' jc='space-between' px='$4'>
                     <Button onPress={handleSelectFromCameraRoll}>
-                        <Button.Text>Gallery</Button.Text>
+                        <Button.Text>{t('CameraCapture.gallery')}</Button.Text>
                     </Button>
                     <Button onPress={handleTakePhoto} size='$6' circular bg='$blue-500' borderWidth={5} borderColor='$blue-700'>
                         <Button.Text fontSize={14} color='$white'>
-                            Snap
+                            {t('CameraCapture.snap')}
                         </Button.Text>
                     </Button>
                     <Button onPress={openGalleryOverlay}>
-                        <Button.Text>{photos.length} Photos</Button.Text>
+                        <Button.Text>{photos.length} {t('CameraCapture.photos')}</Button.Text>
                     </Button>
                 </XStack>
                 <YStack px='$5'>
                     <Button width='100%' bg='$success' borderWidth={1} borderColor='$successBorder' onPress={handleDone}>
                         <Button.Text fontSize={15} color='$successText'>
-                            Done
+                            {t('common.done')}
                         </Button.Text>
                     </Button>
                 </YStack>
@@ -139,7 +141,7 @@ const CameraCapture = ({ onDone }: CameraCaptureScreenProps) => {
                 <YStack pos='absolute' top={0} left={0} w='100%' h='100%' bg='$surface' opacity={0.95}>
                     <XStack jc='flex-end' p='$4'>
                         <Button size='$3' onPress={closeGalleryOverlay} bg='$default' borderWidth={1} borderColor='$defaultBorder'>
-                            <Button.Text color='$defaultText'>Close</Button.Text>
+                            <Button.Text color='$defaultText'>{t('common.close')}</Button.Text>
                         </Button>
                     </XStack>
 

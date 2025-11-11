@@ -12,6 +12,7 @@ import PlaceMapView from './PlaceMapView';
 import Badge from './Badge';
 import Spacer from './Spacer';
 import useAppTheme from '../hooks/use-app-theme';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const CurrentDestinationSelect = ({ onChange, destination, waypoints = [], snapTo = '100%', isLoading = false, ...props }) => {
     const { isDarkMode } = useAppTheme();
@@ -20,6 +21,7 @@ const CurrentDestinationSelect = ({ onChange, destination, waypoints = [], snapT
     const bottomSheetRef = useRef<BottomSheet>(null);
     const snapPoints = useMemo(() => [snapTo], [snapTo]);
     const desinationStatus = destination.getAttribute('status');
+    const { t } = useLanguage();
 
     const openBottomSheet = () => {
         bottomSheetRef.current?.snapToPosition(snapTo);
@@ -53,7 +55,7 @@ const CurrentDestinationSelect = ({ onChange, destination, waypoints = [], snapT
                             ) : (
                                 <YStack>
                                     <Text size={15} color={isDarkMode ? '$infoText' : '$gray-700'} fontWeight='bold' textTransform='uppercase' mb={2}>
-                                        {destination.getAttribute('name') ?? 'Current Destination'}
+                                        {destination.getAttribute('name') ?? t('CurrentDestinationSelect.selectDestination')}
                                     </Text>
                                     <Text color={isDarkMode ? '$textSecondary' : '$gray-500'} textTransform='uppercase' mb='$1'>
                                         {formattedAddressFromPlace(destination)}
@@ -96,7 +98,7 @@ const CurrentDestinationSelect = ({ onChange, destination, waypoints = [], snapT
                         <YStack>
                             <XStack alignItems='center' justifyContent='space-between' px='$5' mb='$4'>
                                 <Text fontSize='$6' color='$textPrimary' fontWeight='bold'>
-                                    Select destination
+                                    {t('CurrentDestinationSelect.selectDestination')}
                                 </Text>
                             </XStack>
                             <BottomSheetFlatList
@@ -169,7 +171,7 @@ const CurrentDestinationSelect = ({ onChange, destination, waypoints = [], snapT
                                                                     <Text color={isDestination ? '$white' : '$textPrimary'} fontWeight='bold' numberOfLines={1}>
                                                                         {waypoint.getAttribute('name') ?? waypoint.getAttribute('street1')}
                                                                     </Text>
-                                                                    {isDestination && <Text color='$infoText'>(Destination)</Text>}
+                                                                    {isDestination && <Text color='$infoText'>{t('CurrentDestinationSelect.destination')}</Text>}
                                                                 </YStack>
                                                                 {typeof waypoint.getAttribute('status') === 'string' && (
                                                                     <Badge status={waypoint.getAttribute('status')} fontSize='$1' px='$2' py='$1' />

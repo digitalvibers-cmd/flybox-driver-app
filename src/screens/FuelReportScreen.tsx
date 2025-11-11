@@ -16,6 +16,7 @@ import LoadingOverlay from '../components/LoadingOverlay';
 import HeaderButton from '../components/HeaderButton';
 import PlaceMapView from '../components/PlaceMapView';
 import useFleetbase from '../hooks/use-fleetbase';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const FuelReportScreen = () => {
     const theme = useTheme();
@@ -27,6 +28,7 @@ const FuelReportScreen = () => {
     } = useTempStore();
     const location = new Place({ id: fuelReport.id, location: fuelReport.location });
     const [isLoading, setIsLoading] = useState(false);
+    const { t } = useLanguage();
 
     const handleDeleteFuelReport = useCallback(() => {
         const handleDelete = async () => {
@@ -42,11 +44,11 @@ const FuelReportScreen = () => {
             }
         };
 
-        Alert.alert('Confirm Deletion', 'Are you sure you want to delete this Fuel Report?', [
-            { text: 'Cancel', style: 'cancel' },
-            { text: 'Delete Fuel Report', onPress: handleDelete },
+        Alert.alert(t('common.confirmDeletion'), t('FuelReportScreen.areYouSureYouWantToDeleteThisFuelReport'), [
+            { text: t('common.cancel'), style: 'cancel' },
+            { text: t('common.delete'), onPress: handleDelete },
         ]);
-    }, [adapter]);
+    }, [adapter, fuelReport.id, navigation, t]);
 
     return (
         <YStack flex={1} bg='$background'>
@@ -64,12 +66,12 @@ const FuelReportScreen = () => {
                     <HeaderButton icon={faTimes} onPress={() => navigation.goBack()} />
                 </XStack>
             </Portal>
-            <LoadingOverlay visible={isLoading} text='Deleting Fuel Report...' />
+            <LoadingOverlay visible={isLoading} text={t('FuelReportScreen.deletingFuelReport')} />
             <YStack py='$3' space='$3'>
                 <XStack px='$3' alignItems='center' space='$3'>
                     <YStack alignItems='flex-start'>
                         <Text color='$textSecondary' fontSize={17} fontWeight='bold'>
-                            Odometer:
+                            {t('FuelReportScreen.odometer')}
                         </Text>
                     </YStack>
                     <YStack flex={1} alignItems='flex-end'>
@@ -82,7 +84,7 @@ const FuelReportScreen = () => {
                 <XStack px='$3' alignItems='center' space='$3'>
                     <YStack alignItems='flex-start'>
                         <Text color='$textSecondary' fontSize={17} fontWeight='bold'>
-                            Volume:
+                            {t('FuelReportScreen.volume')}
                         </Text>
                     </YStack>
                     <YStack flex={1} alignItems='flex-end'>
@@ -95,7 +97,7 @@ const FuelReportScreen = () => {
                 <XStack px='$3' alignItems='center' space='$3'>
                     <YStack alignItems='flex-start'>
                         <Text color='$textSecondary' fontSize={17} fontWeight='bold'>
-                            Vehicle:
+                            {t('FuelReportScreen.vehicle')}
                         </Text>
                     </YStack>
                     <YStack flex={1} alignItems='flex-end'>
@@ -108,7 +110,7 @@ const FuelReportScreen = () => {
                 <XStack px='$3' alignItems='center' space='$3'>
                     <YStack alignItems='flex-start'>
                         <Text color='$textSecondary' fontSize={17} fontWeight='bold'>
-                            Cost:
+                            {t('FuelReportScreen.cost')}
                         </Text>
                     </YStack>
                     <YStack flex={1} alignItems='flex-end'>
@@ -121,7 +123,7 @@ const FuelReportScreen = () => {
                 <XStack px='$3' alignItems='center' space='$3'>
                     <YStack alignItems='flex-start'>
                         <Text color='$textSecondary' fontSize={17} fontWeight='bold'>
-                            Status:
+                            {t('FuelReportScreen.status')}
                         </Text>
                     </YStack>
                     <YStack flex={1} alignItems='flex-end'>
@@ -132,7 +134,7 @@ const FuelReportScreen = () => {
                 <YStack px='$3' space='$3'>
                     <YStack alignItems='flex-start'>
                         <Text color='$textSecondary' fontSize={17} fontWeight='bold'>
-                            Report Location:
+                            {t('FuelReportScreen.reportLocation')}
                         </Text>
                     </YStack>
                     <YStack flex={1} alignItems='flex-start'>

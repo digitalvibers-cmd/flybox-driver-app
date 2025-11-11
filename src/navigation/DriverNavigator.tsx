@@ -51,6 +51,7 @@ import BackButton from '../components/BackButton';
 import HeaderButton from '../components/HeaderButton';
 import Badge from '../components/Badge';
 import DeviceInfo from 'react-native-device-info';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const isAndroid = Platform.OS === 'android';
 const importedIconsMap = {
@@ -180,7 +181,10 @@ function getDriverNavigatorHeaderOptions({ route, navigation }) {
         headerTitle: '',
         headerLeft: (props) => (
             <Text color='$textPrimary' fontSize={20} fontWeight='bold'>
-                Navigator
+                {(() => {
+                    const { t } = useLanguage();
+                    return t('DriverNavigator.navigator');
+                })()}
             </Text>
         ),
         headerRight: (props) => <DriverOnlineToggle {...props} />,
@@ -301,12 +305,13 @@ const DriverReportTab = createNativeStackNavigator({
         CreateFuelReport: {
             screen: CreateFuelReportScreen,
             options: ({ route, navigation }) => {
+                const { t } = useLanguage();
                 return {
                     presentation: 'modal',
                     headerTitle: '',
                     headerLeft: (props) => (
                         <Text color='$textPrimary' fontSize={20} fontWeight='bold'>
-                            Create a new Fuel Report
+                            {t('DriverNavigator.createANewFuelReport')}
                         </Text>
                     ),
                     headerRight: (props) => <HeaderButton icon={faTimes} onPress={() => navigation.goBack()} />,
@@ -322,13 +327,14 @@ const DriverReportTab = createNativeStackNavigator({
             options: ({ route, navigation }) => {
                 const params = route.params || {};
                 const fuelReport = params.fuelReport;
+                const { t } = useLanguage();
 
                 return {
                     presentation: 'modal',
                     headerTitle: '',
                     headerLeft: (props) => (
                         <Text color='$textPrimary' fontSize={18} fontWeight='bold' numberOfLines={1}>
-                            Edit Fuel Report from {format(new Date(fuelReport.created_at), 'MMM dd, yyyy HH:mm')}
+                            {t('common.edit')} Fuel Report from {format(new Date(fuelReport.created_at), 'MMM dd, yyyy HH:mm')}
                         </Text>
                     ),
                     headerRight: (props) => <HeaderButton icon={faTimes} onPress={() => navigation.goBack()} />,
@@ -365,12 +371,13 @@ const DriverReportTab = createNativeStackNavigator({
         CreateIssue: {
             screen: CreateIssueScreen,
             options: ({ route, navigation }) => {
+                const { t } = useLanguage();
                 return {
                     presentation: 'modal',
                     headerTitle: '',
                     headerLeft: (props) => (
                         <Text color='$textPrimary' fontSize={20} fontWeight='bold'>
-                            Create a new Issue
+                            {t('DriverNavigator.createANewIssue')}
                         </Text>
                     ),
                     headerRight: (props) => <HeaderButton icon={faTimes} onPress={() => navigation.goBack()} />,
@@ -386,13 +393,14 @@ const DriverReportTab = createNativeStackNavigator({
             options: ({ route, navigation }) => {
                 const params = route.params || {};
                 const issue = params.issue;
+                const { t } = useLanguage();
 
                 return {
                     presentation: 'modal',
                     headerTitle: '',
                     headerLeft: (props) => (
                         <Text color='$textPrimary' fontSize={18} fontWeight='bold' numberOfLines={1}>
-                            Edit Issue from {format(new Date(issue.created_at), 'MMM dd, yyyy HH:mm')}
+                            {t('common.edit')} Issue from {format(new Date(issue.created_at), 'MMM dd, yyyy HH:mm')}
                         </Text>
                     ),
                     headerRight: (props) => <HeaderButton icon={faTimes} onPress={() => navigation.goBack()} />,
@@ -506,19 +514,22 @@ const DriverNavigator = createBottomTabNavigator({
 
         return {
             headerTitle: '',
-            headerLeft: (props) => (
-                <View pl='$3'>
-                    <XStack alignItems='center'>
-                        <Image source={require('../../assets/navigator-icon-transparent.png')} style={{ width: 18, height: 18, marginRight: 5 }} />
-                        <Text color='$textPrimary' fontSize={20} fontWeight='bold'>
-                            Navigator
+            headerLeft: (props) => {
+                const { t } = useLanguage();
+                return (
+                    <View pl='$3'>
+                        <XStack alignItems='center'>
+                            <Image source={require('../../assets/navigator-icon-transparent.png')} style={{ width: 18, height: 18, marginRight: 5 }} />
+                            <Text color='$textPrimary' fontSize={20} fontWeight='bold'>
+                                {t('DriverNavigator.navigator')}
+                            </Text>
+                        </XStack>
+                        <Text color='$textSecondary' fontSize={8} ml={25}>
+                            v{DeviceInfo.getVersion()} #{DeviceInfo.getBuildNumber()}
                         </Text>
-                    </XStack>
-                    <Text color='$textSecondary' fontSize={8} ml={25}>
-                        v{DeviceInfo.getVersion()} #{DeviceInfo.getBuildNumber()}
-                    </Text>
-                </View>
-            ),
+                    </View>
+                );
+            },
             headerRight: (props) => (
                 <View pr='$3'>
                     <DriverOnlineToggle {...props} />

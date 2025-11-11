@@ -10,6 +10,7 @@ import { useChat } from '../contexts/ChatContext';
 import { useAuth } from '../contexts/AuthContext';
 import useSocketClusterClient from '../hooks/use-socket-cluster-client';
 import ChatParticipantAvatar from '../components/ChatParticipantAvatar';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const ChatHomeScreen = () => {
     const theme = useTheme();
@@ -19,6 +20,7 @@ const ChatHomeScreen = () => {
     const { listen } = useSocketClusterClient();
     const listenerRef = useRef({});
     const loadedRef = useRef(false);
+    const { t } = useLanguage();
 
     const handleOpenChannel = (channel) => {
         setCurrentChannel(channel);
@@ -29,7 +31,7 @@ const ChatHomeScreen = () => {
         const lastParticipant = last(channel.participants);
         const otherParticipant = channel.participants.find((participant) => participant.user !== driver.getAttribute('user')) ?? lastParticipant;
         const lastMessageReceived = channel.last_message ? channel.last_message.created_at : channel.created_at;
-        let lastMessageContent = 'No messages';
+        let lastMessageContent = t('ChatHomeScreen.noMessages') || 'No messages';
 
         if (channel.last_message?.content) {
             if (channel.participants.length > 2) {
@@ -152,7 +154,7 @@ const ChatHomeScreen = () => {
             <XStack bg='$background' alignItems='center' justifyContent='space-between' px='$3' py='$4' borderBottomWidth={1} borderColor='$borderColor'>
                 <YStack>
                     <Text color='$textPrimary' fontSize={26} fontWeight='bold'>
-                        Chats
+                        {t('ChatHomeScreen.chats')}
                     </Text>
                 </YStack>
                 <YStack>

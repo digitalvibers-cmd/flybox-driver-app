@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { SafeAreaView, Pressable, Keyboard, StyleSheet } from 'react-native';
+import { SafeAreaView, Pressable, Keyboard, StyleSheet, Alert } from 'react-native';
 import { Spinner, Text, YStack, XStack, Button, useTheme } from 'tamagui';
 import { toast, ToastPosition } from '@backpackapp-io/react-native-toast';
 import { useAuth } from '../contexts/AuthContext';
@@ -8,20 +8,23 @@ import { usePromiseWithLoading } from '../hooks/use-promise-with-loading';
 import BackButton from '../components/BackButton';
 import PhoneInput from '../components/PhoneInput';
 import Input from '../components/Input';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const RenderAccountProperty = ({ property, value, onChange }) => {
+    const { t } = useLanguage();
     return (
         <YStack flex={1} width='100%'>
             {property.component === 'phone-input' ? (
                 <PhoneInput value={value} onChange={onChange} wrapperProps={{ flex: 1 }} />
             ) : (
-                <Input value={value} onChangeText={onChange} size='$5' placeholder={property.name} />
+                <Input value={value} onChangeText={onChange} size='$5' placeholder={t('EditAccountPropertyScreen.' + property.name)} />
             )}
         </YStack>
     );
 };
 
 const EditAccountPropertyScreen = ({ route }) => {
+    const { t } = useLanguage();
     const property = route.params.property;
     const theme = useTheme();
     const navigation = useNavigation();
@@ -34,12 +37,12 @@ const EditAccountPropertyScreen = ({ route }) => {
         try {
             const updatedCustomer = await runWithLoading(customer.update({ [property.key]: value }));
             setCustomer(updatedCustomer);
-            toast.success(`${property.name} changes saved.`);
+            toast.success(t('EditAccountPropertyScreen.' + property.name) + ' changes saved.');
             navigation.goBack();
         } catch (error) {
             toast.error(error.message);
         }
-    }, [customer, runWithLoading]);
+    }, [customer, runWithLoading, setCustomer, value, property.name]);
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: theme.background.val }}>
@@ -47,7 +50,7 @@ const EditAccountPropertyScreen = ({ route }) => {
                 <XStack space='$3' alignItems='center' mb='$5'>
                     <BackButton size={40} />
                     <Text color='$textPrimary' fontWeight='bold' fontSize='$8' numberOfLines={1}>
-                        {property.name}
+                        {t('EditAccountPropertyScreen.' + property.name)}
                     </Text>
                 </XStack>
                 <XStack width='100%'>
@@ -60,7 +63,7 @@ const EditAccountPropertyScreen = ({ route }) => {
                     <Button onPress={handleUpdateProperty} size='$5' bg='$primary' flex={1} opacity={mutated ? 1 : 0.75} disabled={!mutated}>
                         <Button.Icon>{isLoading() && <Spinner color='$textPrimary' />}</Button.Icon>
                         <Button.Text color='$textPrimary' fontWeight='bold' fontSize='$5'>
-                            Save
+                            {t('common.save')}
                         </Button.Text>
                     </Button>
                 </XStack>

@@ -10,6 +10,7 @@ import { format } from 'date-fns';
 import FastImage from 'react-native-fast-image';
 import useStorage from '../hooks/use-storage';
 import useFleetbase from '../hooks/use-fleetbase';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const PROOF_COLUMN_WIDTH = 160;
 
@@ -21,6 +22,7 @@ const OrderProofOfDelivery = ({ order, subject }) => {
     const [proofs, setProofs] = useStorage(`${id}_proofs`, []);
     const [isLoading, setIsLoading] = useState(false);
     const [fullscreenImage, setFullscreenImage] = useState(null);
+    const { t } = useLanguage();
 
     const loadOrderProof = useCallback(async () => {
         if (!adapter) return;
@@ -107,7 +109,7 @@ const OrderProofOfDelivery = ({ order, subject }) => {
     if (proofs.length === 0) {
         return (
             <YStack py='$5' alignItems='center' justifyContent='center'>
-                <Text color='$textSecondary'>No Proof of Delivery Captured.</Text>
+                <Text color='$textSecondary'>{t('OrderProofOfDelivery.noProofOfDeliveryCaptured')}</Text>
             </YStack>
         );
     }
