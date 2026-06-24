@@ -25,6 +25,8 @@ import { PortalHost } from '@gorhom/portal';
 import { useIsNotAuthenticated, useIsAuthenticated } from '../contexts/AuthContext';
 import { useTempStore } from '../contexts/TempStoreContext';
 import DriverDashboardScreen from '../screens/DriverDashboardScreen';
+import PackageScanScreen from '../screens/PackageScanScreen';
+import PackageScanConfirmScreen from '../screens/PackageScanConfirmScreen';
 import DriverOrderManagementScreen from '../screens/DriverOrderManagementScreen';
 import OrderScreen from '../screens/OrderScreen';
 import EntityScreen from '../screens/EntityScreen';
@@ -180,7 +182,7 @@ function getDriverNavigatorHeaderOptions({ route, navigation }) {
         headerTitle: '',
         headerLeft: (props) => (
             <Text color='$textPrimary' fontSize={20} fontWeight='bold'>
-                Navigator
+                FlyBox Driver
             </Text>
         ),
         headerRight: (props) => <DriverOnlineToggle {...props} />,
@@ -200,6 +202,22 @@ const DriverDashboardTab = createNativeStackNavigator({
     screens: {
         DriverDashboard: {
             screen: DriverDashboardScreen,
+            options: ({ route, navigation }) => {
+                return {
+                    headerShown: false,
+                };
+            },
+        },
+        PackageScan: {
+            screen: PackageScanScreen,
+            options: ({ route, navigation }) => {
+                return {
+                    headerShown: false,
+                };
+            },
+        },
+        PackageScanConfirm: {
+            screen: PackageScanConfirmScreen,
             options: ({ route, navigation }) => {
                 return {
                     headerShown: false,
@@ -511,7 +529,7 @@ const DriverNavigator = createBottomTabNavigator({
                     <XStack alignItems='center'>
                         <Image source={require('../../assets/navigator-icon-transparent.png')} style={{ width: 18, height: 18, marginRight: 5 }} />
                         <Text color='$textPrimary' fontSize={20} fontWeight='bold'>
-                            Navigator
+                            FlyBox Driver
                         </Text>
                     </XStack>
                     <Text color='$textSecondary' fontSize={8} ml={25}>

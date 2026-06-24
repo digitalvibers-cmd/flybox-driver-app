@@ -1,5 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { Text, YStack, XStack, useTheme } from 'tamagui';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faQrcode } from '@fortawesome/free-solid-svg-icons';
 import { useLocation } from '../contexts/LocationContext';
 import { useOrderManager } from '../contexts/OrderManagerContext';
 import { humanize } from 'inflected';
@@ -76,6 +78,22 @@ const DriverDashboardScreen = () => {
                         </YStack>
                     </WidgetContainer>
                 </XStack>
+                <WidgetContainer
+                    onPress={() => navigation.navigate('PackageScan')}
+                    pressStyle={{ opacity: 0.85 }}
+                    bg={theme.primary.val}
+                    borderColor='$transparent'
+                    alignItems='center'
+                    justifyContent='center'
+                    py='$5'
+                >
+                    <XStack alignItems='center' space='$3'>
+                        <FontAwesomeIcon icon={faQrcode} color='white' size={22} />
+                        <Text color='white' fontWeight='bold' fontSize={16}>
+                            Scan package QR code
+                        </Text>
+                    </XStack>
+                </WidgetContainer>
             </YStack>
         </YStack>
     );
