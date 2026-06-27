@@ -331,13 +331,34 @@ Tracked in `/Users/buco/.claude/plans/zelim-da-analiziras-i-glistening-pearl.md`
    - **iOS follow-up**: the 1024 `ios-marketing` AppIcon currently has an alpha channel (App Store rejects alpha) and is upscaled from 512 — supply a 1024 opaque master before any App Store submission (iOS build is deferred anyway).
    - **Play Store feature banner** (`assets/play-store-feature-image.png`, 1024×500) still has Navigator artwork — needs a designed FlyBox banner.
    - **Bootsplash gotcha**: `yarn generate:launch-screen` writes the Android logo to `res/drawable-*/bootsplash_logo.png`, but the project's `res/values/styles.xml` `BootTheme` originally pointed `bootSplashLogo` at `@mipmap/bootsplash_logo` (stale paper-plane copies that the generator does NOT touch). Fixed by pointing it at `@drawable/bootsplash_logo` and deleting the orphaned `mipmap-*/bootsplash_logo.png`. If you re-run the generator, keep the theme on `@drawable`.
-2. **QR self-assign feature** — new `src/screens/PackageScanScreen.tsx` that reuses the existing `QrCodeScanner` component. Backend endpoint `POST /int/v1/fleetvibe/orders/scan-assign` in a custom FleetVibe Laravel package (not yet built).
+2. **QR self-assign feature** — ✅ DONE. `src/screens/PackageScanScreen.tsx` + `PackageScanConfirmScreen.tsx` (reuse `QrCodeScanner`), Dash button, `src/utils/custom-fields.ts`. Backend endpoints are **`POST /v1/orders/scan-resolve`** and **`/v1/orders/scan-assign`** in the embedded fleetops `Api\v1\OrderController` (NOT a custom package, NOT `/int/v1/` — the SDK uses the public `/v1/` namespace; auth via `session('user')`/`session('company')` since `$request->user()` is null there). Custom field values come flattened as top-level underscored keys on the `/v1/` order (e.g. `order.cena_otkupa`), not `custom_field_values[]`. See Fleet Vibe `CLAUDE.md` for the backend details.
 3. **Persist `cli.js` patch** as a yarn berry patch in `.yarn/patches/` + `resolutions` entry.
 4. **Real Firebase project** — replace placeholder `google-services.json`. Required for push notifications.
 5. **Real string resources** for Transistorsoft license + Facebook IDs (or strip Facebook out if unused).
-6. **CI/CD** — GitHub Actions runner with Android SDK, build APK on push, optionally Firebase App Distribution for beta APK delivery.
+6. **CI/CD** — ✅ DONE. `.github/workflows/flybox-apk.yml` builds a signed APK on push to `flybox/main` and self-hosts it at https://fleetvibe.digitalvibe.rs/app/flybox-driver.apk. See "CI/CD & Distribution" section above + `DISTRIBUCIJA.md`. (Firebase App Distribution still optional future improvement.)
 7. **Localization** — Navigator uses `react-native-i18n`; add `sr.json` (Serbian).
 8. **iOS** — currently deferred; will require Xcode + CocoaPods + Apple Developer account.
+
+## CI/CD & Distribution
+
+The app is distributed **as an APK** (no Play Store). On every push to `flybox/main` (or a manual `workflow_dispatch`), `.github/workflows/flybox-apk.yml` builds a **signed** release APK and uploads it to the Hetzner server, served by nginx at a fixed link:
+
+- **Driver download link (DEV build):** https://fleetvibe.digitalvibe.rs/app/flybox-driver.apk
+- Versioned copies: `…/app/flybox-driver-build<run_number>.apk`
+
+CI build details: targets the **DEV** API (`FLEETBASE_HOST=https://apifleetvibe.digitalvibe.rs`); builds only `armeabi-v7a,arm64-v8a` (real phones, no x86 bloat); Node 20 + yarn 4.16.0 (via `yarnPath`); JDK 17; Android SDK 35 + NDK 27.1.12297006. It re-applies the `cli.js` autolink-exit patch as a safety step.
+
+### Signing keystore (CRITICAL — back it up)
+Every build (local and CI) is signed with the **same** keystore `~/flybox-test.keystore` (alias `flybox`, store/key pass `flybox123`). Android only allows updating an installed app when the new APK is signed with the **same key**, so this keystore must never change and **must be backed up**. If lost, drivers would have to uninstall before installing a new build. No Play Store upload key is needed (we don't ship via the Store).
+
+### GitHub secrets (repo `digitalvibers-cmd/flybox-driver-app`)
+`ANDROID_KEYSTORE_BASE64` (base64 of the keystore), `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`, `FLEETBASE_KEY`, `GOOGLE_MAPS_API_KEY`, `GOOGLE_SERVICES_JSON` (placeholder content; `google-services.json` is gitignored), `APK_DEPLOY_SSH_KEY` (private key; its public half is in the server `deploy` user's `authorized_keys`). `build.gradle` reads the keystore via `ANDROID_NAVIGATOR_APP_UPLOAD_STORE_FILE/STORE_PASSWORD/KEY_ALIAS/KEY_PASSWORD` (falls back to debug keystore when unset).
+
+### Server hosting (one-time, root SSH `46.225.99.48`)
+`/opt/fleetvibe-apk/` (owned by `deploy`) holds the APKs; nginx vhost `fleetvibe-console` has a `location /app/ { alias /opt/fleetvibe-apk/; … apk mime … }` block. The workflow `scp`s the APK there as `deploy`.
+
+### Cut a release / switch to PROD
+Release = push to `flybox/main` or Actions → "FlyBox Driver — Build & Distribute APK" → Run workflow. For PROD later: change `FLEETBASE_HOST` in the workflow to `https://api.flybox.rs` and host on a prod domain (own `/opt/…-apk` dir + nginx `location /app/` on the prod vhost). See `DISTRIBUCIJA.md` for how to share the link with drivers.
 
 ## References
 

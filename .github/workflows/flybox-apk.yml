@@ -1,0 +1,115 @@
+name: FlyBox Driver — Build & Distribute APK
+
+# Builds a signed release APK on every push to flybox/main (or manual run) and
+# uploads it to the Hetzner server, served by nginx at:
+#   https://fleetvibe.digitalvibe.rs/app/flybox-driver.apk
+# The APK targets the DEV API (apifleetvibe.digitalvibe.rs). For prod, change
+# FLEETBASE_HOST below and host on the flybox.rs domain.
+
+on:
+  push:
+    branches: [flybox/main]
+    paths-ignore:
+      - '**.md'
+  workflow_dispatch:
+
+concurrency:
+  group: flybox-apk
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Enable Corepack (uses yarn 4.16.0 via yarnPath)
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      # The RN 0.77 CLI doesn't process.exit after `config`, which can hang the
+      # Gradle autolink step. Re-apply the conditional-exit patch (idempotent).
+      - name: Re-apply react-native cli.js autolink exit patch
+        run: |
+          node -e "
+          const fs=require('fs');const f='node_modules/react-native/cli.js';
+          let s=fs.readFileSync(f,'utf8');
+          const m=\"return require('@react-native-community/cli').run(name);\";
+          if(s.includes(m)){s=s.replace(m,\"const _rp=require('@react-native-community/cli').run(name);return process.argv.includes('config')?_rp.then(()=>process.exit(0)):_rp;\");fs.writeFileSync(f,s);console.log('cli.js patched');}else{console.log('cli.js marker not found — skipping');}
+          "
+
+      - name: Create .env
+        env:
+          FLEETBASE_KEY: ${{ secrets.FLEETBASE_KEY }}
+          GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
+        run: |
+          {
+            echo "APP_NAME=FlyBox Driver"
+            echo "APP_IDENTIFIER=io.fleetbase.navigator"
+            echo "APP_LINK_PREFIX=flbnavigator"
+            echo "FLEETBASE_HOST=https://apifleetvibe.digitalvibe.rs"
+            echo "FLEETBASE_KEY=$FLEETBASE_KEY"
+            echo "GOOGLE_MAPS_API_KEY=$GOOGLE_MAPS_API_KEY"
+            echo "DEFAULT_COORDINATES=44.7866,20.4489"
+          } > .env
+
+      - name: Write google-services.json
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: printf '%s' "$GOOGLE_SERVICES_JSON" > android/app/google-services.json
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install NDK + platform + build-tools
+        run: |
+          yes | sdkmanager --licenses >/dev/null 2>&1 || true
+          sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0" "ndk;27.1.12297006"
+
+      - name: Decode signing keystore
+        run: echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > "$GITHUB_WORKSPACE/flybox-release.keystore"
+
+      - name: Build signed release APK (arm)
+        working-directory: android
+        env:
+          ANDROID_NAVIGATOR_APP_UPLOAD_STORE_FILE: ${{ github.workspace }}/flybox-release.keystore
+          ANDROID_NAVIGATOR_APP_UPLOAD_STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_NAVIGATOR_APP_UPLOAD_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_NAVIGATOR_APP_UPLOAD_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: ./gradlew assembleRelease -PreactNativeArchitectures=armeabi-v7a,arm64-v8a --no-daemon --stacktrace
+
+      - name: Publish APK to server (nginx /app)
+        env:
+          DEPLOY_KEY: ${{ secrets.APK_DEPLOY_SSH_KEY }}
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$DEPLOY_KEY" > ~/.ssh/apk_deploy
+          chmod 600 ~/.ssh/apk_deploy
+          APK=android/app/build/outputs/apk/release/app-release.apk
+          ls -la "$APK"
+          scp -i ~/.ssh/apk_deploy -o StrictHostKeyChecking=accept-new -o ConnectTimeout=20 \
+            "$APK" deploy@46.225.99.48:/opt/fleetvibe-apk/flybox-driver.apk
+          scp -i ~/.ssh/apk_deploy -o StrictHostKeyChecking=accept-new -o ConnectTimeout=20 \
+            "$APK" deploy@46.225.99.48:/opt/fleetvibe-apk/flybox-driver-build${{ github.run_number }}.apk
+          echo "✅ Published: https://fleetvibe.digitalvibe.rs/app/flybox-driver.apk"
+
+      - name: Upload APK artifact (fallback)
+        uses: actions/upload-artifact@v4
+        with:
+          name: flybox-driver-apk
+          path: android/app/build/outputs/apk/release/app-release.apk
+          retention-days: 60
