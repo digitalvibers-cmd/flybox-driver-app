@@ -53,7 +53,7 @@ const CreateAccountVerifyScreen = ({ route }) => {
                 <Button onPress={() => handleVerifyCode(code)} bg='$primary' width='100%' opacity={isVerifyingCode ? 0.75 : 1} disabled={isVerifyingCode} rounded>
                     <Button.Icon>{isVerifyingCode ? <Spinner color='$white' /> : <FontAwesomeIcon icon={faCheck} color={theme.white.val} />}</Button.Icon>
                     <Button.Text color='$white' fontWeight='bold'>
-                        Verify Code
+                        Potvrdi kod
                     </Button.Text>
                 </Button>
                 <Button onPress={handleRetry} bg='$secondary' width='100%' rounded>
@@ -61,7 +61,7 @@ const CreateAccountVerifyScreen = ({ route }) => {
                         <FontAwesomeIcon icon={faArrowRotateRight} color={theme['gray-500'].val} />
                     </Button.Icon>
                     <Button.Text color='$gray-500' fontWeight='bold'>
-                        Retry
+                        Pokušaj ponovo
                     </Button.Text>
                 </Button>
             </YStack>

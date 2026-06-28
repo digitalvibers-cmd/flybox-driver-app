@@ -44,13 +44,13 @@ export const AdhocOrderCard = ({ order, onPress, onAccept, onDismiss }) => {
     }, [location, destination]);
 
     const handleAccept = useCallback(async () => {
-        Alert.alert('Accept Ad-Hoc order?', 'By accepting this ad-hoc order it will become assigned to you and the order will start immediatley.', [
+        Alert.alert('Prihvatiti ad-hoc porudžbinu?', 'Prihvatanjem ove ad-hoc porudžbine ona se dodeljuje vama i porudžbina odmah počinje.', [
             {
-                text: 'Cancel',
+                text: 'Otkaži',
                 style: 'cancel',
             },
             {
-                text: 'Accept',
+                text: 'Prihvati',
                 onPress: async () => {
                     setIsAccepting(true);
 
@@ -70,13 +70,13 @@ export const AdhocOrderCard = ({ order, onPress, onAccept, onDismiss }) => {
     }, [order, setIsAccepting]);
 
     const handleDismiss = useCallback(() => {
-        Alert.alert('Dismiss Ad-Hoc order?', 'By dimissing this ad-hoc order it will no longer display as an available order.', [
+        Alert.alert('Odbaciti ad-hoc porudžbinu?', 'Odbacivanjem ove ad-hoc porudžbine ona se više neće prikazivati kao dostupna porudžbina.', [
             {
-                text: 'Cancel',
+                text: 'Otkaži',
                 style: 'cancel',
             },
             {
-                text: 'OK',
+                text: 'U redu',
                 onPress: () => {
                     if (typeof onDismiss === 'function') {
                         onDismiss(order);
@@ -88,7 +88,7 @@ export const AdhocOrderCard = ({ order, onPress, onAccept, onDismiss }) => {
 
     return (
         <Pressable onPress={onPress}>
-            <LoadingOverlay isVisible={isAccepting} text='Accepting and assigning order...' />
+            <LoadingOverlay isVisible={isAccepting} text='Prihvatanje i dodeljivanje porudžbine...' />
             <YStack bg='$info' borderRadius='$4' borderWidth={1} borderColor='$infoBorder'>
                 <YStack height={150} borderBottomWidth={1} borderColor='$infoBorder'>
                     <LiveOrderRoute
@@ -110,7 +110,7 @@ export const AdhocOrderCard = ({ order, onPress, onAccept, onDismiss }) => {
                 <YStack flex={1} borderRadius='$4'>
                     <XStack bg='$blue-800' alignItems='center' px='$3' py='$3' mb='$3' borderBottomWidth={1} borderColor='$infoBorder'>
                         <Text color='$infoText' fontSize='$6' fontWeight='bold'>
-                            Order Available Nearby: {formatMeters(distance)}
+                            Dostupna porudžbina u blizini: {formatMeters(distance)}
                         </Text>
                     </XStack>
                     <XStack alignItems='start' justifyContent='space-between' px='$3' mb='$3'>
@@ -126,7 +126,7 @@ export const AdhocOrderCard = ({ order, onPress, onAccept, onDismiss }) => {
                                     {formatWhatsAppTimestamp(new Date(order.getAttribute('created_at')))}
                                 </Text>
                                 <Text color='$textPrimary' fontSize={13}>
-                                    {formatMeters(distance)} away
+                                    {formatMeters(distance)} udaljeno
                                 </Text>
                             </YStack>
                         </XStack>
@@ -139,7 +139,7 @@ export const AdhocOrderCard = ({ order, onPress, onAccept, onDismiss }) => {
                             icon={faLocationDot}
                             iconColor={theme['$textPrimary'].val}
                             waypoint={destination.serialize()}
-                            title='Pickup Destination'
+                            title='Mesto preuzimanja'
                             titleStyle={{ fontWeight: 'bold', fontSize: 14, textTransform: 'uppercase' }}
                         />
                     </YStack>
@@ -147,7 +147,7 @@ export const AdhocOrderCard = ({ order, onPress, onAccept, onDismiss }) => {
                         <YStack flex={1}>
                             <Button onPress={handleAccept} bg='$success' borderColor='$successBorder' borderWidth={1} disabled={isAccepting}>
                                 <Button.Icon>{isAccepting ? <Spinner color='$successText' /> : <FontAwesomeIcon icon={faCheck} color={theme['$successText'].val} />}</Button.Icon>
-                                <Button.Text color='$successText'>Accept Order</Button.Text>
+                                <Button.Text color='$successText'>Prihvati porudžbinu</Button.Text>
                             </Button>
                         </YStack>
                         <YStack flex={1}>
@@ -155,7 +155,7 @@ export const AdhocOrderCard = ({ order, onPress, onAccept, onDismiss }) => {
                                 <Button.Icon>
                                     <FontAwesomeIcon icon={faBan} color={theme['$errorText'].val} />
                                 </Button.Icon>
-                                <Button.Text color='$errorText'>Dismiss Order</Button.Text>
+                                <Button.Text color='$errorText'>Odbaci porudžbinu</Button.Text>
                             </Button>
                         </YStack>
                     </XStack>

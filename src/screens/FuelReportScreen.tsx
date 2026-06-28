@@ -42,9 +42,9 @@ const FuelReportScreen = () => {
             }
         };
 
-        Alert.alert('Confirm Deletion', 'Are you sure you want to delete this Fuel Report?', [
-            { text: 'Cancel', style: 'cancel' },
-            { text: 'Delete Fuel Report', onPress: handleDelete },
+        Alert.alert('Potvrda brisanja', 'Da li ste sigurni da želite da obrišete ovaj izveštaj o gorivu?', [
+            { text: 'Otkaži', style: 'cancel' },
+            { text: 'Obriši izveštaj', onPress: handleDelete },
         ]);
     }, [adapter]);
 
@@ -64,7 +64,7 @@ const FuelReportScreen = () => {
                     <HeaderButton icon={faTimes} onPress={() => navigation.goBack()} />
                 </XStack>
             </Portal>
-            <LoadingOverlay visible={isLoading} text='Deleting Fuel Report...' />
+            <LoadingOverlay visible={isLoading} text='Brisanje izveštaja o gorivu...' />
             <YStack py='$3' space='$3'>
                 <XStack px='$3' alignItems='center' space='$3'>
                     <YStack alignItems='flex-start'>

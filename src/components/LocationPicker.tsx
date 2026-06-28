@@ -196,7 +196,7 @@ const LocationPicker = ({
                                 >
                                     <XStack mb='$1' padding='$2'>
                                         <FontAwesomeIcon icon={faPlus} size={16} color={theme.textPrimary.val} style={{ marginRight: 6 }} />
-                                        <Text color='$textPrimary'>Add New Location</Text>
+                                        <Text color='$textPrimary'>Dodaj novu lokaciju</Text>
                                     </XStack>
                                 </Pressable>
                             </YStack>

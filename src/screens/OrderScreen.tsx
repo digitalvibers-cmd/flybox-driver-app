@@ -186,11 +186,11 @@ const OrderScreen = ({ route }) => {
 
     const alertDestinationChanged = (previousDestination, currentDestination, order) => {
         return Alert.alert(
-            'Waypoint Completed',
-            `Waypoint activity completed for destination ${previousDestination.getAttribute('address')}. Your current destination is now ${currentDestination.getAttribute('address')}. You can change the destination at anytime by pressing the "Current Destination" button.`,
+            'Tačka rute završena',
+            `Aktivnost za tačku rute je završena za odredište ${previousDestination.getAttribute('address')}. Vaše trenutno odredište je sada ${currentDestination.getAttribute('address')}. Odredište možete promeniti u svakom trenutku pritiskom na dugme „Trenutno odredište“.`,
             [
                 {
-                    text: 'Continue',
+                    text: 'Nastavi',
                     isPreferred: true,
                     onPress: () => {
                         return startOrder({ skipDispatch: true });
@@ -256,15 +256,15 @@ const OrderScreen = ({ route }) => {
                 console.warn('Error starting order:', err, err.message);
                 const errorMessage = err.message ?? '';
                 if (errorMessage.startsWith('Order has not been dispatched')) {
-                    return Alert.alert('Order Not Dispatched Yet', 'This order is not yet dispatched, are you sure you want to continue?', [
+                    return Alert.alert('Porudžbina još nije otpremljena', 'Ova porudžbina još nije otpremljena, da li ste sigurni da želite da nastavite?', [
                         {
-                            text: 'Yes',
+                            text: 'Da',
                             onPress: () => {
                                 return startOrder({ skipDispatch: true });
                             },
                         },
                         {
-                            text: 'Cancel',
+                            text: 'Otkaži',
                             onPress: () => {
                                 return reloadOrder();
                             },
@@ -284,9 +284,9 @@ const OrderScreen = ({ route }) => {
         try {
             const activity = await runWithLoading(order.getNextActivity({ waypoint: destination?.id }), 'nextOrderActivity');
             if (activity.code === 'dispatched') {
-                return Alert.alert('Warning!', 'This order is not yet dispatched, are you sure you want to continue?', [
+                return Alert.alert('Upozorenje!', 'Ova porudžbina još nije otpremljena, da li ste sigurni da želite da nastavite?', [
                     {
-                        text: 'Yes',
+                        text: 'Da',
                         onPress: async () => {
                             try {
                                 const updatedOrder = await order.updateActivity({ skipDispatch: true });
@@ -297,7 +297,7 @@ const OrderScreen = ({ route }) => {
                         },
                     },
                     {
-                        text: 'Cancel',
+                        text: 'Otkaži',
                         onPress: () => {
                             return reloadOrder();
                         },
@@ -324,14 +324,14 @@ const OrderScreen = ({ route }) => {
             const previousDestination = getOrderDestination(order, adapter);
 
             isUpdatingActivity.current = true;
-            setLoadingOverlayMessage(`Updating Activity: ${activity._resolved_status ?? activity.status}`);
+            setLoadingOverlayMessage(`Ažuriranje aktivnosti: ${activity._resolved_status ?? activity.status}`);
 
             try {
                 const updatedOrder = await runWithLoading(order.updateActivity({ activity, proof: proof?.id }), 'activityUpdate');
                 updateOrder(updatedOrder);
                 setNextActivity([]);
                 setLoadingOverlayMessage(null);
-                toast.success(`Order status updated to: ${activity._resolved_status ?? activity.status}`);
+                toast.success(`Status porudžbine ažuriran na: ${activity._resolved_status ?? activity.status}`);
 
                 const currentDestination = getOrderDestination(updatedOrder, adapter);
                 const shouldNotifyUserDestinationChanged = activity.complete && updatedOrder.status !== 'completed' && previousDestination?.id !== currentDestination?.id;
@@ -372,13 +372,13 @@ const OrderScreen = ({ route }) => {
     );
 
     const handleAdhocAccept = useCallback(async () => {
-        Alert.alert('Accept Ad-Hoc order?', 'By accepting this ad-hoc order it will become assigned to you and the order will start immediatley.', [
+        Alert.alert('Prihvatiti ad-hoc porudžbinu?', 'Prihvatanjem ove ad-hoc porudžbine ona se dodeljuje vama i porudžbina odmah počinje.', [
             {
-                text: 'Cancel',
+                text: 'Otkaži',
                 style: 'cancel',
             },
             {
-                text: 'Accept',
+                text: 'Prihvati',
                 onPress: async () => {
                     setIsAccepting(true);
 
@@ -396,13 +396,13 @@ const OrderScreen = ({ route }) => {
     }, [order, driver, setIsAccepting]);
 
     const handleAdhocDismissal = useCallback(() => {
-        Alert.alert('Dismiss Ad-Hoc order?', 'By dimissing this ad-hoc order it will no longer display as an available order.', [
+        Alert.alert('Odbaciti ad-hoc porudžbinu?', 'Odbacivanjem ove ad-hoc porudžbine ona se više neće prikazivati kao dostupna porudžbina.', [
             {
-                text: 'Cancel',
+                text: 'Otkaži',
                 style: 'cancel',
             },
             {
-                text: 'OK',
+                text: 'U redu',
                 onPress: () => {
                     setDimissedOrders((prevDismissedOrders) => [...prevDismissedOrders, order.id]);
                     navigation.goBack();
@@ -544,13 +544,13 @@ const OrderScreen = ({ route }) => {
                             <XStack flex={1} space='$2' ml={5}>
                                 <Button onPress={handleAdhocAccept} flex={1} bg='$success' borderWidth={1} borderColor='$successBorder' disabled={isAccepting}>
                                     <Button.Icon>{isAccepting ? <Spinner color='$successText' /> : <FontAwesomeIcon icon={faCheck} color={theme.successText.val} />}</Button.Icon>
-                                    <Button.Text color='$successText'>Accept Order</Button.Text>
+                                    <Button.Text color='$successText'>Prihvati porudžbinu</Button.Text>
                                 </Button>
                                 <Button onPress={handleAdhocDismissal} flex={1} bg='$error' borderWidth={1} borderColor='$errorBorder' disabled={isAccepting}>
                                     <Button.Icon>
                                         <FontAwesomeIcon icon={faBan} color={theme.errorText.val} />
                                     </Button.Icon>
-                                    <Button.Text color='$errorText'>Dismiss Order</Button.Text>
+                                    <Button.Text color='$errorText'>Odbaci porudžbinu</Button.Text>
                                 </Button>
                             </XStack>
                         )}
@@ -559,7 +559,7 @@ const OrderScreen = ({ route }) => {
                                 <Button.Icon>
                                     {isLoading('startOrder') ? <Spinner color='$successText' /> : <FontAwesomeIcon icon={faFlagCheckered} color={theme.successText.val} />}
                                 </Button.Icon>
-                                <Button.Text color='$successText'>Start Order</Button.Text>
+                                <Button.Text color='$successText'>Započni porudžbinu</Button.Text>
                             </Button>
                         )}
                         {order.isInProgress && (
@@ -567,13 +567,13 @@ const OrderScreen = ({ route }) => {
                                 <Button.Icon>
                                     {isLoading('nextOrderActivity') ? <Spinner color='successText' /> : <FontAwesomeIcon icon={faPenToSquare} color={theme.infoText.val} />}
                                 </Button.Icon>
-                                <Button.Text color='$successText'>Update Activity</Button.Text>
+                                <Button.Text color='$successText'>Ažuriraj aktivnost</Button.Text>
                             </Button>
                         )}
                         {isNavigatable && (
                             <Button onPress={startNavigation} bg='$info' borderWidth={1} borderColor='$infoBorder'>
                                 <Button.Icon>{isLoading('startNavigation') ? <Spinner color='$infoText' /> : <FontAwesomeIcon icon={faPaperPlane} color={theme.infoText.val} />}</Button.Icon>
-                                <Button.Text color='$infoText'>Start Navigation</Button.Text>
+                                <Button.Text color='$infoText'>Pokreni navigaciju</Button.Text>
                             </Button>
                         )}
                     </XStack>
@@ -589,23 +589,23 @@ const OrderScreen = ({ route }) => {
                         </YStack>
                     )}
                 </ActionContainer>
-                <SectionHeader title='Order Information' />
+                <SectionHeader title='Podaci o porudžbini' />
                 <YStack py='$4'>
                     <SectionInfoLine title='ID' value={order.id} />
                     <Separator />
-                    <SectionInfoLine title='Internal ID' value={order.getAttribute('internal_id')} />
+                    <SectionInfoLine title='Interni ID' value={order.getAttribute('internal_id')} />
                     <Separator />
-                    <SectionInfoLine title='Tracking Number' value={order.getAttribute('tracking_number.tracking_number')} />
+                    <SectionInfoLine title='Broj za praćenje' value={order.getAttribute('tracking_number.tracking_number')} />
                     <Separator />
-                    <SectionInfoLine title='Proof of Delivery' value={order.getAttribute('pod_required') ? titleize(order.getAttribute('pod_method')) : 'N/A'} />
+                    <SectionInfoLine title='Potvrda isporuke' value={order.getAttribute('pod_required') ? titleize(order.getAttribute('pod_method')) : 'N/A'} />
                     <Separator />
-                    <SectionInfoLine title='Type' value={titleize(order.getAttribute('type'))} />
+                    <SectionInfoLine title='Tip' value={titleize(order.getAttribute('type'))} />
                     <Separator />
-                    <SectionInfoLine title='Date Created' value={formatDate(new Date(order.getAttribute('created_at')), 'PP HH:mm')} />
+                    <SectionInfoLine title='Datum kreiranja' value={formatDate(new Date(order.getAttribute('created_at')), 'PP HH:mm')} />
                     <Separator />
-                    <SectionInfoLine title='Date Scheduled' value={order.getAttribute('scheduled_at') ? formatDate(new Date(order.getAttribute('scheduled_at')), 'PP HH:mm') : '-'} />
+                    <SectionInfoLine title='Datum zakazivanja' value={order.getAttribute('scheduled_at') ? formatDate(new Date(order.getAttribute('scheduled_at')), 'PP HH:mm') : '-'} />
                     <Separator />
-                    <SectionInfoLine title='Date Dispatched' value={order.getAttribute('dispatched_at') ? formatDate(new Date(order.getAttribute('dispatched_at')), 'PP HH:mm') : '-'} />
+                    <SectionInfoLine title='Datum otpreme' value={order.getAttribute('dispatched_at') ? formatDate(new Date(order.getAttribute('dispatched_at')), 'PP HH:mm') : '-'} />
                     {customFieldKeys.map((key, index) => (
                         <YStack key={index}>
                             <Separator />
@@ -613,11 +613,11 @@ const OrderScreen = ({ route }) => {
                         </YStack>
                     ))}
                 </YStack>
-                <SectionHeader title='Order Route' />
+                <SectionHeader title='Ruta porudžbine' />
                 <YStack px='$3' py='$4'>
                     <OrderWaypointList order={order} />
                 </YStack>
-                <SectionHeader title='Order Progress' />
+                <SectionHeader title='Tok porudžbine' />
                 <YStack>
                     <YStack px='$3' py='$4'>
                         <OrderProgressBar
@@ -628,44 +628,44 @@ const OrderScreen = ({ route }) => {
                         />
                     </YStack>
                     <YStack pb='$3'>
-                        <SectionInfoLine title='Current Destination' value={trackerData.current_destination?.address} />
+                        <SectionInfoLine title='Trenutno odredište' value={trackerData.current_destination?.address} />
                         <Separator />
-                        <SectionInfoLine title='Next Destination' value={trackerData.next_destination?.address} />
+                        <SectionInfoLine title='Sledeće odredište' value={trackerData.next_destination?.address} />
                         <Separator />
-                        <SectionInfoLine title='Total Distance' value={formatMeters(trackerData.total_distance)} />
+                        <SectionInfoLine title='Ukupna udaljenost' value={formatMeters(trackerData.total_distance)} />
                         <Separator />
-                        <SectionInfoLine title='Start Time' value={trackerData.start_time ? '-' : trackerData.start_time} />
+                        <SectionInfoLine title='Vreme početka' value={trackerData.start_time ? '-' : trackerData.start_time} />
                         <Separator />
-                        <SectionInfoLine title='Current ETA' value={trackerData.current_destination_eta === -1 ? 'N/A' : formatDuration(trackerData.current_destination_eta)} />
+                        <SectionInfoLine title='Procenjeno vreme dolaska' value={trackerData.current_destination_eta === -1 ? 'N/A' : formatDuration(trackerData.current_destination_eta)} />
                         <Separator />
-                        <SectionInfoLine title='ECT' value={trackerData.estimated_completion_time_formatted} />
+                        <SectionInfoLine title='Procenjeno vreme završetka' value={trackerData.estimated_completion_time_formatted} />
                     </YStack>
                 </YStack>
-                <SectionHeader title='Order Notes' />
+                <SectionHeader title='Napomene' />
                 <YStack px='$3' py='$4'>
                     <Text color='$textPrimary'>{order.getAttribute('notes', 'N/A') ?? 'N/A'}</Text>
                 </YStack>
-                <SectionHeader title='Order Proof' />
+                <SectionHeader title='Potvrda isporuke' />
                 <YStack>
                     <OrderProofOfDelivery order={order} />
                 </YStack>
-                <SectionHeader title='Order Payload' />
+                <SectionHeader title='Sadržaj porudžbine' />
                 <YStack>
                     <OrderPayloadEntities order={order} onPress={({ entity, waypoint }) => navigation.navigate('Entity', { entity, waypoint })} />
                 </YStack>
                 {order.isAttributeFilled('customer') && (
                     <>
-                        <SectionHeader title='Customer' />
+                        <SectionHeader title='Kupac' />
                         <YStack px='$3' py='$4'>
                             <OrderCustomerCard customer={order.getAttribute('customer')} />
                         </YStack>
                     </>
                 )}
-                <SectionHeader title='Order Documents & Files' />
+                <SectionHeader title='Dokumenti i fajlovi' />
                 <YStack>
                     <OrderDocumentFiles order={order} />
                 </YStack>
-                <SectionHeader title='Order Comments' />
+                <SectionHeader title='Komentari' />
                 <YStack px='$2' py='$4'>
                     <OrderCommentThread order={order} />
                 </YStack>

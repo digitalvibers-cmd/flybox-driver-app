@@ -27,8 +27,8 @@ const DriverReportScreen = () => {
     const [currentTab, setCurrentTab] = useStorage('current_reports_tab', 'issue');
     const [isRefreshing, setIsRefreshing] = useState(false);
     const reportOptions = [
-        { value: 'issue', label: 'Issues' },
-        { value: 'fuel-report', label: 'Fuel Reports' },
+        { value: 'issue', label: 'Prijave' },
+        { value: 'fuel-report', label: 'Izveštaji o gorivu' },
     ];
     const currentIndex = reportOptions.findIndex((option) => option.value === currentTab);
     const content = useMemo(() => (currentTab === 'issue' ? issues : fuelReports), [currentTab, issues, fuelReports]);
@@ -111,12 +111,12 @@ const DriverReportScreen = () => {
                                     <Badge status={issue.status} alignSelf='flex-start' py='$1' px='$2' borderRadius='$3' numberOfLines={1} />
                                 </XStack>
                                 <XStack gap='$2' alignItems='center'>
-                                    <Text fontWeight='bold'>Priority:</Text>
+                                    <Text fontWeight='bold'>Prioritet:</Text>
                                     <Badge status={issue.priority} alignSelf='flex-start' py='$1' px='$2' borderRadius='$3' numberOfLines={1} />
                                 </XStack>
                             </XStack>
                             <YStack flex={1} gap='$2'>
-                                <Text fontWeight='bold'>Report:</Text>
+                                <Text fontWeight='bold'>Opis:</Text>
                                 <Text color='$textSecondary' numberOfLines={3}>
                                     {issue.report}
                                 </Text>
@@ -126,22 +126,22 @@ const DriverReportScreen = () => {
                         <YStack bg='$background' pb='$2' gap='$2' borderBottomLeftRadius='$4' borderBottomRightRadius='$4'>
                             <YStack gap='$3'>
                                 <XStack gap='$2' px='$3' justifyContent='space-between'>
-                                    <Text fontWeight='bold'>Type:</Text>
+                                    <Text fontWeight='bold'>Tip:</Text>
                                     <Text numberOfLines={1}>{titleize(issue.type) ?? 'N/A'}</Text>
                                 </XStack>
                                 <Separator />
                                 <XStack gap='$2' px='$3' justifyContent='space-between'>
-                                    <Text fontWeight='bold'>Category:</Text>
+                                    <Text fontWeight='bold'>Kategorija:</Text>
                                     <Text numberOfLines={1}>{titleize(issue.category) ?? 'N/A'}</Text>
                                 </XStack>
                                 <Separator />
                                 <XStack gap='$2' px='$3' justifyContent='space-between'>
-                                    <Text fontWeight='bold'>Vehicle:</Text>
+                                    <Text fontWeight='bold'>Vozilo:</Text>
                                     <Text numberOfLines={1}>{issue.vehicle_name ?? 'N/A'}</Text>
                                 </XStack>
                                 <Separator />
                                 <XStack gap='$2' px='$3' pb='$2' justifyContent='space-between'>
-                                    <Text fontWeight='bold'>Reporter:</Text>
+                                    <Text fontWeight='bold'>Prijavio:</Text>
                                     <Text numberOfLines={1}>{issue.reporter_name ?? 'N/A'}</Text>
                                 </XStack>
                             </YStack>
@@ -171,7 +171,7 @@ const DriverReportScreen = () => {
                         >
                             <XStack space='$2'>
                                 <Text size='$5' color='$textSecondary' fontWeight='bold' numberOfLines={1}>
-                                    Fuel Reported:
+                                    Gorivo prijavljeno:
                                 </Text>
                                 <Text size='$5' color='$textPrimary' fontWeight='bold' numberOfLines={1}>
                                     {format(new Date(fuelReport.created_at), 'MMM dd, yyyy HH:mm')}
@@ -200,17 +200,17 @@ const DriverReportScreen = () => {
                         <YStack bg='$background' pb='$2' gap='$2' borderBottomLeftRadius='$4' borderBottomRightRadius='$4'>
                             <YStack gap='$3'>
                                 <XStack gap='$2' px='$3' justifyContent='space-between'>
-                                    <Text fontWeight='bold'>Odometer:</Text>
+                                    <Text fontWeight='bold'>Kilometraža:</Text>
                                     <Text numberOfLines={1}>{fuelReport.odometer ?? 'N/A'}</Text>
                                 </XStack>
                                 <Separator />
                                 <XStack gap='$2' px='$3' justifyContent='space-between'>
-                                    <Text fontWeight='bold'>Volume:</Text>
+                                    <Text fontWeight='bold'>Količina:</Text>
                                     <Text numberOfLines={1}>{`${fuelReport.volume} ${fuelReport.metric_unit}` ?? 'N/A'}</Text>
                                 </XStack>
                                 <Separator />
                                 <XStack gap='$2' px='$3' pb='$2' justifyContent='space-between'>
-                                    <Text fontWeight='bold'>Cost:</Text>
+                                    <Text fontWeight='bold'>Cena:</Text>
                                     <Text numberOfLines={1}>{formatCurrency(fuelReport.amount, fuelReport.currency) ?? 'N/A'}</Text>
                                 </XStack>
                             </YStack>

@@ -39,7 +39,7 @@ const EditIssueScreen = () => {
 
     return (
         <YStack flex={1} bg='$background'>
-            <IssueForm value={issue} onSubmit={handleSaveIssue} isSubmitting={isLoading} submitText='Save Issue' />
+            <IssueForm value={issue} onSubmit={handleSaveIssue} isSubmitting={isLoading} submitText='Sačuvaj prijavu' />
         </YStack>
     );
 };

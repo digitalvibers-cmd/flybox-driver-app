@@ -11,7 +11,7 @@ export const MultipleCustomerAvatars: React.FC<MultipleCustomerAvatarsProps> = (
     if (customers.length === 0) {
         return (
             <XStack alignItems='center'>
-                <Text color='$textPrimary'>No customers</Text>
+                <Text color='$textPrimary'>Nema kupaca</Text>
             </XStack>
         );
     }

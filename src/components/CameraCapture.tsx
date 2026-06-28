@@ -46,7 +46,7 @@ const CameraCapture = ({ onDone }: CameraCaptureScreenProps) => {
                 flash: 'off',
                 qualityPrioritization: 'balanced',
             });
-            toast.info('Photo captured.', { position: ToastPosition.TOP });
+            toast.info('Fotografija snimljena.', { position: ToastPosition.TOP });
 
             const filePath = (Platform.OS === 'ios' ? '' : 'file://') + photo.path;
             const base64Data = await RNFS.readFile(filePath, 'base64');
@@ -74,7 +74,7 @@ const CameraCapture = ({ onDone }: CameraCaptureScreenProps) => {
             // For simplicity, let's just take the first photo (in a real scenario you'd present a UI).
             if (photosFromGallery.edges.length > 0) {
                 const { node } = photosFromGallery.edges[0];
-                toast.info('Photo added from gallery.', { position: ToastPosition.TOP });
+                toast.info('Fotografija dodata iz galerije.', { position: ToastPosition.TOP });
                 setPhotos((prev) => [...prev, { uri: node.image.uri }]);
             }
         } catch (error) {
@@ -102,7 +102,7 @@ const CameraCapture = ({ onDone }: CameraCaptureScreenProps) => {
     if (!device || !hasPermission) {
         return (
             <YStack flex={1} justifyContent='center' alignItems='center'>
-                <Text color='$textSecondary'>Loading camera or awaiting permission...</Text>
+                <Text color='$textSecondary'>Učitavanje kamere ili čekanje dozvole...</Text>
             </YStack>
         );
     }
@@ -115,21 +115,21 @@ const CameraCapture = ({ onDone }: CameraCaptureScreenProps) => {
             <YStack width='100%' height={MENU_BAR_HEIGHT} bg='$background' py='$3' space='$4' borderTopWidth={1} borderColor='$borderColorWithShadow'>
                 <XStack ai='center' jc='space-between' px='$4'>
                     <Button onPress={handleSelectFromCameraRoll}>
-                        <Button.Text>Gallery</Button.Text>
+                        <Button.Text>Galerija</Button.Text>
                     </Button>
                     <Button onPress={handleTakePhoto} size='$6' circular bg='$blue-500' borderWidth={5} borderColor='$blue-700'>
                         <Button.Text fontSize={14} color='$white'>
-                            Snap
+                            Slikaj
                         </Button.Text>
                     </Button>
                     <Button onPress={openGalleryOverlay}>
-                        <Button.Text>{photos.length} Photos</Button.Text>
+                        <Button.Text>{photos.length} fotografija</Button.Text>
                     </Button>
                 </XStack>
                 <YStack px='$5'>
                     <Button width='100%' bg='$success' borderWidth={1} borderColor='$successBorder' onPress={handleDone}>
                         <Button.Text fontSize={15} color='$successText'>
-                            Done
+                            Gotovo
                         </Button.Text>
                     </Button>
                 </YStack>
@@ -139,7 +139,7 @@ const CameraCapture = ({ onDone }: CameraCaptureScreenProps) => {
                 <YStack pos='absolute' top={0} left={0} w='100%' h='100%' bg='$surface' opacity={0.95}>
                     <XStack jc='flex-end' p='$4'>
                         <Button size='$3' onPress={closeGalleryOverlay} bg='$default' borderWidth={1} borderColor='$defaultBorder'>
-                            <Button.Text color='$defaultText'>Close</Button.Text>
+                            <Button.Text color='$defaultText'>Zatvori</Button.Text>
                         </Button>
                     </XStack>
 

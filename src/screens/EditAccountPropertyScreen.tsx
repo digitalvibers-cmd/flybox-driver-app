@@ -60,7 +60,7 @@ const EditAccountPropertyScreen = ({ route }) => {
                     <Button onPress={handleUpdateProperty} size='$5' bg='$primary' flex={1} opacity={mutated ? 1 : 0.75} disabled={!mutated}>
                         <Button.Icon>{isLoading() && <Spinner color='$textPrimary' />}</Button.Icon>
                         <Button.Text color='$textPrimary' fontWeight='bold' fontSize='$5'>
-                            Save
+                            Sačuvaj
                         </Button.Text>
                     </Button>
                 </XStack>
