@@ -38,6 +38,32 @@ Pošalji vozačima link preko **WhatsApp / Viber / SMS**, sa kratkim uputstvom (
 
 Gotovo — aplikacija je spremna.
 
+## Podešavanja na telefonu (Android) — šta omogućiti da bi instalacija prošla
+
+Pošto APK ne dolazi sa Play Store-a, Android ga podrazumevano blokira dok ne uključiš nekoliko opcija. Najčešće telefon sam iskoči sa pravim prozorom tokom instalacije — samo treba odobriti. Lista svega što može biti potrebno:
+
+1. **Instaliranje nepoznatih aplikacija (Install unknown apps)** — OBAVEZNO.
+   - _Najlakše:_ kad tapneš preuzeti `flybox-driver.apk`, iskoči prozor "For your security, your phone is not allowed to install unknown apps from this source" → tapni **Settings / Podešavanja** → uključi **"Allow from this source / Dozvoli iz ovog izvora"** → vrati se nazad → **Install**.
+   - _Ručno (ako treba unapred):_ Podešavanja → **Aplikacije** → izaberi aplikaciju iz koje otvaraš APK (**Chrome**, ili **Files / Moji fajlovi**) → **"Instaliraj nepoznate aplikacije"** → uključi.
+   - _Stariji Android (7 i niže):_ Podešavanja → **Bezbednost** → uključi **"Nepoznati izvori"** (globalni prekidač).
+
+2. **Google Play Protect** — može da javi "App not scanned" / "Unsafe app".
+   - Na upozorenju tapni **"More details / Detaljnije"** → **"Install anyway / Svejedno instaliraj"**.
+   - _Opciono_ privremeno isključi skeniranje: **Play Store** → tvoja slika (gore desno) → **Play Protect** → ⚙ (gore desno) → isključi **"Scan apps with Play Protect"** (vrati posle instalacije).
+
+3. **Samsung (One UI 6.1+) — "Auto Blocker"** — blokira instalaciju mimo Store-a. Isključi: Podešavanja → **Bezbednost i privatnost** → **Auto Blocker** → isključi (ili privremeno dozvoli za ovu instalaciju).
+
+4. **Xiaomi / Redmi / POCO (MIUI / HyperOS):**
+   - Podešavanja → **Privatnost / Zaštita privatnosti** → **Posebne dozvole** → **"Instaliraj nepoznate aplikacije"** → Chrome/Files → dozvoli.
+   - MIUI pri instalaciji "skenira" aplikaciju i ima ~10s odbrojavanje — sačekaj, pa **"Install anyway / Instaliraj svejedno"**.
+   - Ako i dalje blokira: Podešavanja → Dodatna podešavanja → Developer options → isključi "MIUI optimization" (retko potrebno; vrati posle).
+
+5. **Dovoljno slobodne memorije** — najmanje **~300–500 MB** slobodno (APK je ~92 MB, a pri instalaciji se raspakuje i zauzima više). Ako javi "App not installed / Aplikacija nije instalirana", najčešće je razlog premalo prostora → oslobodi i probaj ponovo.
+
+6. **Preuzimanje u pregledaču** — otvori link u **Chrome**-u (ne u in-app pregledaču iz WhatsApp/Viber-a). Ako se link otvori kao tekst umesto da se preuzme: drži prst na linku → **"Download link / Sačuvaj link"**.
+
+> Sve ove dozvole se traže **samo prvi put**. Kasniji update-i (isti link) instaliraju se bez ponovnog podešavanja.
+
 ## Ažuriranje na novu verziju
 
 Kad stigne nova verzija, vozač samo **ponovo otvori isti link**, preuzme i instalira preko stare verzije:
