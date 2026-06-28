@@ -51,7 +51,7 @@ export const QrCodeScanner: React.FC<QrCodeScannerProps> = ({ onScan, width = '1
     if (!device) {
         return (
             <View style={[styles.noCamera, { width, height }]}>
-                <Text style={{ color: '#fff' }}>No camera available</Text>
+                <Text style={{ color: '#fff' }}>Kamera nije dostupna</Text>
             </View>
         );
     }

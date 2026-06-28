@@ -17,7 +17,7 @@ const MoneyInput = ({
     type = 'volume',
     snapTo = '100%',
     backgroundColor = '$surface',
-    placeholder = 'Input amount',
+    placeholder = 'Unesite iznos',
     wrapperProps = {},
     portalHost = 'MainPortal',
     onBottomSheetPositionChanged,
@@ -179,7 +179,7 @@ const MoneyInput = ({
                     <YStack px='$2'>
                         <BottomSheetTextInput
                             ref={searchInputRef}
-                            placeholder='Search currencies'
+                            placeholder='Pretraži valute'
                             onChangeText={setSearchTerm}
                             autoCapitalize='none'
                             autoComplete='off'

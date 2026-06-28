@@ -30,7 +30,7 @@ const UnitInput = ({
     type = 'volume',
     snapTo = '100%',
     backgroundColor = '$surface',
-    placeholder = 'Input volume',
+    placeholder = 'Unesite količinu',
     wrapperProps = {},
     portalHost = 'MainPortal',
     onBottomSheetPositionChanged,
@@ -197,7 +197,7 @@ const UnitInput = ({
                     <YStack px='$2'>
                         <BottomSheetTextInput
                             ref={searchInputRef}
-                            placeholder='Search unit'
+                            placeholder='Pretraži jedinicu'
                             onChangeText={setSearchTerm}
                             autoCapitalize='none'
                             autoComplete='off'

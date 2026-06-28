@@ -24,7 +24,7 @@ const PhoneLoginScreen = () => {
         }
 
         if (!isValidPhoneNumber(phone)) {
-            return toast.error('Invalid phone number provided.');
+            return toast.error('Unet je neispravan broj telefona.');
         }
 
         try {
@@ -49,13 +49,13 @@ const PhoneLoginScreen = () => {
             <YStack flex={1} alignItems='center' space='$3'>
                 <YStack space='$2' width='100%' px='$5' pt='$5'>
                     <Text color='$gray-200' fontWeight='bold' fontSize='$8' mb='$3'>
-                        Login via SMS
+                        Prijava putem SMS-a
                     </Text>
                     <PhoneInput value={phone} onChange={(phoneNumber) => setPhone(phoneNumber)} />
                     <Button size='$5' onPress={handleSendVerificationCode} bg='$primary' width='100%' opacity={isSendingCode ? 0.75 : 1} disabled={isSendingCode} rounded>
                         <Button.Icon>{isSendingCode ? <Spinner color='$white' /> : <FontAwesomeIcon icon={faPaperPlane} color={'#fff'} />}</Button.Icon>
                         <Button.Text color='$white' fontWeight='bold'>
-                            Send Verification Code
+                            Pošalji verifikacioni kod
                         </Button.Text>
                     </Button>
                 </YStack>
@@ -70,7 +70,7 @@ const PhoneLoginScreen = () => {
                             <FontAwesomeIcon icon={faArrowLeft} color={isDarkMode ? theme['textPrimary'].val : theme['$gray-400'].val} />
                         </Button.Icon>
                         <Button.Text color={isDarkMode ? theme['textPrimary'].val : theme['$gray-400'].val} fontWeight='bold'>
-                            Home
+                            Početna
                         </Button.Text>
                     </Button>
                 </YStack>

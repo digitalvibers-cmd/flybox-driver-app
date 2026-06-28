@@ -26,7 +26,7 @@ const CreateAccountScreen = ({ route }) => {
         }
 
         if (!isValidPhoneNumber(phone)) {
-            return toast.error('Invalid phone number provided.');
+            return toast.error('Unet je neispravan broj telefona.');
         }
 
         try {
@@ -49,17 +49,17 @@ const CreateAccountScreen = ({ route }) => {
                     <XStack space='$3' alignItems='center' mb='$5'>
                         <BackButton size={40} />
                         <Text color='$textPrimary' fontWeight='bold' fontSize='$8'>
-                            Create Account
+                            Kreiraj nalog
                         </Text>
                     </XStack>
                     <YStack space='$3'>
-                        <Input value={name} onChangeText={(text) => setName(text)} placeholder='Enter your name' />
+                        <Input value={name} onChangeText={(text) => setName(text)} placeholder='Unesite svoje ime' />
                         <PhoneInput value={phone} onChange={(phoneNumber) => setPhone(phoneNumber)} />
                     </YStack>
                     <Button size='$5' mt='$2' onPress={handleSendVerificationCode} bg='$primary' width='100%' opacity={isSendingCode ? 0.75 : 1} disabled={isSendingCode} rounded>
                         <Button.Icon>{isSendingCode ? <Spinner color='$white' /> : <FontAwesomeIcon icon={faPaperPlane} color={theme.white.val} />}</Button.Icon>
                         <Button.Text color='$white' fontWeight='bold'>
-                            Send Verification Code
+                            Pošalji verifikacioni kod
                         </Button.Text>
                     </Button>
                 </YStack>
@@ -71,7 +71,7 @@ const CreateAccountScreen = ({ route }) => {
                 <YStack space='$3' width='100%' padding='$5'>
                     <Button size='$5' onPress={handleLogin} bg='$secondary' width='100%' opacity={isSendingCode ? 0.75 : 1} disabled={isSendingCode} rounded>
                         <Button.Text color='$textPrimary' fontWeight='bold'>
-                            Have an account already? Login
+                            Već imate nalog? Prijavite se
                         </Button.Text>
                     </Button>
                 </YStack>

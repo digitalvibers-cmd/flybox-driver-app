@@ -52,7 +52,7 @@ const PhoneLoginVerifyScreen = () => {
                 <Button size='$5' onPress={() => handleVerifyCode(code)} bg='$primary' width='100%' opacity={isVerifyingCode ? 0.75 : 1} disabled={isVerifyingCode} rounded>
                     <Button.Icon>{isVerifyingCode ? <Spinner color='$white' /> : <FontAwesomeIcon icon={faCheck} color={theme.white.val} />}</Button.Icon>
                     <Button.Text color='$gray-200' fontWeight='bold'>
-                        Verify Code
+                        Potvrdi kod
                     </Button.Text>
                 </Button>
                 <Button size='$5' onPress={handleRetry} bg='$secondary' width='100%' rounded>
@@ -60,7 +60,7 @@ const PhoneLoginVerifyScreen = () => {
                         <FontAwesomeIcon icon={faArrowRotateRight} color={theme['gray-500'].val} />
                     </Button.Icon>
                     <Button.Text color='$textPrimary' fontWeight='bold'>
-                        Retry
+                        Pokušaj ponovo
                     </Button.Text>
                 </Button>
                 {loginMethod === 'email' && (
@@ -71,10 +71,10 @@ const PhoneLoginVerifyScreen = () => {
                             </YStack>
                             <YStack flex={1}>
                                 <Text fontSize={15} color='$infoText' fontWeight='bold'>
-                                    Unable to send SMS.
+                                    Slanje SMS-a nije uspelo.
                                 </Text>
                                 <Text fontSize={15} color='$infoText'>
-                                    Your verification code was sent via <Text fontWeight='bold'>{loginMethod}</Text>.
+                                    Vaš verifikacioni kod je poslat putem <Text fontWeight='bold'>{loginMethod}</Text>.
                                 </Text>
                             </YStack>
                         </XStack>

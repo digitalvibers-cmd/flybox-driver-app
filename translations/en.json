@@ -2,6 +2,7 @@
     "common": {
         "fleetbase": "Fleetbase",
         "navigator": "Navigator",
+        "storefront": "Storefront",
         "apiKey": "API Key",
         "cancel": "Cancel",
         "new": "New",

@@ -50,7 +50,7 @@ export const OrderHistory = {
     screen: OrderHistoryScreen,
     options: ({ navigation }) => {
         return {
-            title: 'Order History',
+            title: 'Istorija porudžbina',
             headerTitleStyle: {
                 color: getTheme('textPrimary'),
             },

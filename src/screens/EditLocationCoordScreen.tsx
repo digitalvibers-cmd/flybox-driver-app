@@ -138,12 +138,12 @@ const EditLocationCoordScreen = ({ route }) => {
                 <Button onPress={handleSave} size='$5' bg='$blue-700' flex={1}>
                     <Button.Icon>{isLoading() && <Spinner color='$blue-100' />}</Button.Icon>
                     <Button.Text color='$blue-100' fontWeight='bold' fontSize='$5'>
-                        Save Position
+                        Sačuvaj poziciju
                     </Button.Text>
                 </Button>
                 <Button onPress={handleReset} size='$5' bg='$secondary' flex={1}>
                     <Button.Text color='$textSecondary' fontWeight='bold' fontSize='$5'>
-                        Reset
+                        Resetuj
                     </Button.Text>
                 </Button>
             </XStack>

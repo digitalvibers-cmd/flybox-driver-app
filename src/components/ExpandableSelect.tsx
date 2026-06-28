@@ -299,7 +299,7 @@ const ExpandableSelect = ({ value, optionValue, options = [], onSelect }) => {
                     shadowRadius={isDropdownOpen ? 3 : 0}
                     px='$4'
                     iconAfter={<FontAwesomeIcon icon={isDropdownOpen ? faChevronUp : faChevronDown} size={16} color={theme.textPrimary.val} />}
-                    accessibilityLabel='Toggle options'
+                    accessibilityLabel='Prikaži ili sakrij opcije'
                     accessibilityRole='button'
                 >
                     <XStack space='$3'>

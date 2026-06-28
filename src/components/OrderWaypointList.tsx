@@ -110,11 +110,11 @@ const WaypointCollapseButton: React.FC<WaypointCollapseButtonProps> = ({ isColla
                     <XStack alignItems='center'>
                         <FontAwesomeIcon icon={faEye} style={{ marginRight: 8, color: theme['$warningText'].val }} />
                         <Text fontWeight='bold' color='$warningText' {...textStyle}>
-                            {isCollapsed ? 'Tap to expand' : 'Tap to collapse'}
+                            {isCollapsed ? 'Dodirnite za prikaz' : 'Dodirnite za skrivanje'}
                         </Text>
                     </XStack>
                     <Text color='$warningText' {...textStyle}>
-                        {count} more waypoints
+                        još {count} tačaka rute
                     </Text>
                 </YStack>
             </Button>

@@ -41,7 +41,7 @@ const EditFuelReportScreen = () => {
 
     return (
         <YStack flex={1} bg='$background'>
-            <FuelReportForm value={fuelReport} onSubmit={handleUpdateReport} isSubmitting={isLoading} submitText='Update Fuel Report' />
+            <FuelReportForm value={fuelReport} onSubmit={handleUpdateReport} isSubmitting={isLoading} submitText='Ažuriraj izveštaj o gorivu' />
         </YStack>
     );
 };
