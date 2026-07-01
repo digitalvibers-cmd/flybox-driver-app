@@ -6,7 +6,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { endOfYear, format, startOfYear, subDays } from 'date-fns';
 import { formatDuration, formatMeters, pluralizeSr } from '../utils/format';
-import { calendarStripLocale } from '../utils/date-locale';
 import { useOrderManager } from '../contexts/OrderManagerContext';
 import { useNotification } from '../contexts/NotificationContext';
 import { useAuth } from '../contexts/AuthContext';
@@ -239,7 +238,6 @@ const DriverOrderManagementScreen = () => {
                 <CalendarStrip
                     scrollable
                     ref={calendar}
-                    locale={calendarStripLocale}
                     datesWhitelist={datesWhitelist}
                     style={{ height: 100, paddingTop: 10, paddingBottom: 15 }}
                     calendarColor={'transparent'}
