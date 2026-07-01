@@ -30,13 +30,28 @@ buildscript {
     }
 }
 
-allprojects { 
+allprojects {
     repositories {
         // Required for react-native-background-geolocation
         maven { url("${project(':react-native-background-geolocation').projectDir}/libs") }
         maven { url 'https://developer.huawei.com/repo/' }
         // Required for react-native-background-fetch
         maven { url("${project(':react-native-background-fetch').projectDir}/libs") }
+
+        // The legacy OSSRH host oss.sonatype.org was decommissioned and now
+        // answers 504 (Gateway Time-out). Some native modules still declare it as
+        // a Maven repo; a 5xx (unlike 404) aborts Gradle resolution instead of
+        // falling through to the next repo, breaking the whole build. Redirect any
+        // such repo to the live Central successor so release artifacts (firebase-bom,
+        // annotations, …) resolve normally from google()/mavenCentral().
+        all { repo ->
+            if (repo instanceof MavenArtifactRepository) {
+                def repoUrl = repo.url?.toString() ?: ''
+                if (repoUrl.startsWith('https://oss.sonatype.org/content/repositories/snapshots')) {
+                    repo.url = 'https://central.sonatype.com/repository/maven-snapshots/'
+                }
+            }
+        }
     }
 }
 
