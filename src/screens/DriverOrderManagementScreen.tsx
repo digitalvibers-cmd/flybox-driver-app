@@ -5,7 +5,8 @@ import { Text, YStack, XStack, Separator, useTheme } from 'tamagui';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { endOfYear, format, startOfYear, subDays } from 'date-fns';
-import { formatDuration, formatMeters } from '../utils/format';
+import { formatDuration, formatMeters, pluralizeSr } from '../utils/format';
+import { calendarStripLocale } from '../utils/date-locale';
 import { useOrderManager } from '../contexts/OrderManagerContext';
 import { useNotification } from '../contexts/NotificationContext';
 import { useAuth } from '../contexts/AuthContext';
@@ -183,7 +184,7 @@ const DriverOrderManagementScreen = () => {
             <YStack>
                 <YStack px='$1'>
                     <Text color='$textPrimary' fontSize={18} fontWeight='bold'>
-                        Active Orders: {allActiveOrders.length}
+                        Aktivne porudžbine: {allActiveOrders.length}
                     </Text>
                 </YStack>
                 <YStack>
@@ -211,7 +212,7 @@ const DriverOrderManagementScreen = () => {
                     <XStack alignItems='center' bg='$info' borderWidth={1} borderColor='$infoBorder' space='$2' px='$3' py='$2' borderRadius='$5' width='100%' flexWrap='wrap'>
                         <FontAwesomeIcon icon={faInfoCircle} color={theme['$infoText'].val} />
                         <Text color='$infoText' fontSize={16}>
-                            No current orders for {format(new Date(currentDate), 'yyyy-MM-dd')}
+                            Nema porudžbina za {format(new Date(currentDate), 'yyyy-MM-dd')}
                         </Text>
                     </XStack>
                 </YStack>
@@ -238,6 +239,7 @@ const DriverOrderManagementScreen = () => {
                 <CalendarStrip
                     scrollable
                     ref={calendar}
+                    locale={calendarStripLocale}
                     datesWhitelist={datesWhitelist}
                     style={{ height: 100, paddingTop: 10, paddingBottom: 15 }}
                     calendarColor={'transparent'}
@@ -261,17 +263,17 @@ const DriverOrderManagementScreen = () => {
             </YStack>
             <YStack bg='$surface' px='$3' py='$4' borderBottomWidth={1} borderTopWidth={0} borderColor={isDarkMode ? '$borderColor' : '$borderColorWithShadow'}>
                 <Text color='$textPrimary' fontSize='$8' fontWeight='bold' mb='$1'>
-                    {todayString} orders
+                    Porudžbine za {todayString}
                 </Text>
                 <XStack space='$2' alignItems='center'>
                     <Text color='$textSecondary' fontSize='$5'>
-                        {currentOrders.length} {currentOrders.length > 1 ? 'orders' : 'order'}
+                        {currentOrders.length} {pluralizeSr(currentOrders.length, ['porudžbina', 'porudžbine', 'porudžbina'])}
                     </Text>
                     <Text color='$textSecondary' fontSize='$5'>
                         •
                     </Text>
                     <Text color='$textSecondary' fontSize='$5'>
-                        {stops} {stops > 1 ? 'stops' : 'stop'} left
+                        {stops} {pluralizeSr(stops, ['stajanje', 'stajanja', 'stajanja'])} preostalo
                     </Text>
                     <Text color='$textSecondary' fontSize='$5'>
                         •

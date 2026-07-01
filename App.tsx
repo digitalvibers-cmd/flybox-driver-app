@@ -1,3 +1,4 @@
+import './src/utils/date-locale'; // sets Serbian (latinica) as the default date-fns locale app-wide
 import React from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { TamaguiProvider, Theme } from 'tamagui';
