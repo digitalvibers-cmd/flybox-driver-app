@@ -11,7 +11,7 @@ import { getIssueTypes, getIssuePriorities, getIssueStatuses, getIssueCategories
 import BottomSheetSelect from '../components/BottomSheetSelect';
 import TextAreaSheet from '../components/TextAreaSheet';
 
-const IssueForm = ({ value = {}, onSubmit, isSubmitting = false, submitText = 'Publish Issue' }) => {
+const IssueForm = ({ value = {}, onSubmit, isSubmitting = false, submitText = 'Objavi prijavu' }) => {
     const theme = useTheme();
     const navigation = useNavigation();
     const insets = useSafeAreaInsets();
@@ -56,7 +56,7 @@ const IssueForm = ({ value = {}, onSubmit, isSubmitting = false, submitText = 'P
             <YStack py='$3' space='$4'>
                 <YStack px='$3' space='$2'>
                     <Text color='$textPrimary' fontSize={18} fontWeight='bold' px='$1'>
-                        Issue Type
+                        Vrsta prijave
                     </Text>
                     <BottomSheetSelect
                         value={issue.type}
@@ -64,7 +64,7 @@ const IssueForm = ({ value = {}, onSubmit, isSubmitting = false, submitText = 'P
                         optionLabel='value'
                         optionValue='key'
                         onChange={(value) => handleUpdateIssue('type', value)}
-                        title='Select Issue Type'
+                        title='Izaberite vrstu prijave'
                         humanize={true}
                         portalHost='IssueFormPortal'
                         snapTo='100%'
@@ -73,13 +73,13 @@ const IssueForm = ({ value = {}, onSubmit, isSubmitting = false, submitText = 'P
                 </YStack>
                 <YStack px='$3' space='$2'>
                     <Text color='$textPrimary' fontSize={18} fontWeight='bold' px='$1'>
-                        Issue Category
+                        Kategorija prijave
                     </Text>
                     <BottomSheetSelect
                         value={issue.category}
                         options={getIssueCategories(uppercase(underscore(issue.type)))}
                         onChange={(value) => handleUpdateIssue('category', value)}
-                        title='Select Issue Category'
+                        title='Izaberite kategoriju prijave'
                         humanize={true}
                         portalHost='IssueFormPortal'
                         snapTo='100%'
@@ -88,7 +88,7 @@ const IssueForm = ({ value = {}, onSubmit, isSubmitting = false, submitText = 'P
                 </YStack>
                 <YStack px='$3' space='$2'>
                     <Text color='$textPrimary' fontSize={18} fontWeight='bold' px='$1'>
-                        Issue Priority
+                        Prioritet prijave
                     </Text>
                     <BottomSheetSelect
                         value={issue.priority}
@@ -96,7 +96,7 @@ const IssueForm = ({ value = {}, onSubmit, isSubmitting = false, submitText = 'P
                         optionLabel='value'
                         optionValue='key'
                         onChange={(value) => handleUpdateIssue('priority', value)}
-                        title='Select Issue Priority'
+                        title='Izaberite prioritet prijave'
                         humanize={true}
                         portalHost='IssueFormPortal'
                         snapTo='100%'
@@ -105,7 +105,7 @@ const IssueForm = ({ value = {}, onSubmit, isSubmitting = false, submitText = 'P
                 </YStack>
                 <YStack px='$3' space='$2'>
                     <Text color='$textPrimary' fontSize={18} fontWeight='bold' px='$1'>
-                        Issue Status
+                        Status prijave
                     </Text>
                     <BottomSheetSelect
                         value={issue.status}
@@ -113,7 +113,7 @@ const IssueForm = ({ value = {}, onSubmit, isSubmitting = false, submitText = 'P
                         optionLabel='value'
                         optionValue='key'
                         onChange={(value) => handleUpdateIssue('status', value)}
-                        title='Select Issue Status'
+                        title='Izaberite status prijave'
                         humanize={true}
                         portalHost='IssueFormPortal'
                         snapTo='100%'
@@ -122,13 +122,13 @@ const IssueForm = ({ value = {}, onSubmit, isSubmitting = false, submitText = 'P
                 </YStack>
                 <YStack px='$3' space='$2'>
                     <Text color='$textPrimary' fontSize={18} fontWeight='bold' px='$1'>
-                        Issue Report
+                        Opis prijave
                     </Text>
                     <TextAreaSheet
                         value={issue.report}
                         onChange={(value) => handleUpdateIssue('report', value)}
-                        title='Issue Report'
-                        placeholder='Type your issue report...'
+                        title='Opis prijave'
+                        placeholder='Unesite opis prijave...'
                         portalHost='IssueFormPortal'
                         snapTo='100%'
                         onBottomSheetPositionChanged={setIsBottomSheetPresenting}

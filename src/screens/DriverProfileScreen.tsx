@@ -54,10 +54,10 @@ const DriverProfileScreen = () => {
 
     const menuItems = useMemo(() => {
         const items = [
-            { id: '1', title: 'Account', screen: 'DriverAccount' },
+            { id: '1', title: 'Nalog', screen: 'DriverAccount' },
             {
                 id: '2',
-                title: 'Organization',
+                title: 'Organizacija',
                 handler: () => handleSelectOrganization(),
                 rightComponent: (
                     <Text color='$textSecondary' fontSize={13} numberOfLines={1}>

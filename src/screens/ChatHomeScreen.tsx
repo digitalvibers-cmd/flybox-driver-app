@@ -29,7 +29,7 @@ const ChatHomeScreen = () => {
         const lastParticipant = last(channel.participants);
         const otherParticipant = channel.participants.find((participant) => participant.user !== driver.getAttribute('user')) ?? lastParticipant;
         const lastMessageReceived = channel.last_message ? channel.last_message.created_at : channel.created_at;
-        let lastMessageContent = 'No messages';
+        let lastMessageContent = 'Nema poruka';
 
         if (channel.last_message?.content) {
             if (channel.participants.length > 2) {
@@ -152,7 +152,7 @@ const ChatHomeScreen = () => {
             <XStack bg='$background' alignItems='center' justifyContent='space-between' px='$3' py='$4' borderBottomWidth={1} borderColor='$borderColor'>
                 <YStack>
                     <Text color='$textPrimary' fontSize={26} fontWeight='bold'>
-                        Chats
+                        Razgovori
                     </Text>
                 </YStack>
                 <YStack>

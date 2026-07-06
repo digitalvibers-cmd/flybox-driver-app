@@ -10,7 +10,7 @@ export const ChatParticipants = ({ participants = [], size = 30, onPress }) => {
     if (participants.length === 0) {
         return (
             <XStack alignItems='center'>
-                <Text color='$textPrimary'>No participants</Text>
+                <Text color='$textPrimary'>Nema učesnika</Text>
             </XStack>
         );
     }

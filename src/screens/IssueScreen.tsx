@@ -41,9 +41,9 @@ const IssueScreen = () => {
             }
         };
 
-        Alert.alert('Confirm Deletion', 'Are you sure you want to delete this Issue?', [
-            { text: 'Cancel', style: 'cancel' },
-            { text: 'Delete Issue', onPress: handleDelete },
+        Alert.alert('Potvrda brisanja', 'Da li ste sigurni da želite da obrišete ovu prijavu?', [
+            { text: 'Otkaži', style: 'cancel' },
+            { text: 'Obriši prijavu', onPress: handleDelete },
         ]);
     }, [adapter]);
 
@@ -63,7 +63,7 @@ const IssueScreen = () => {
                     <HeaderButton icon={faTimes} onPress={() => navigation.goBack()} />
                 </XStack>
             </Portal>
-            <LoadingOverlay visible={isLoading} text='Deleting Issue...' />
+            <LoadingOverlay visible={isLoading} text='Brisanje prijave...' />
             <YStack py='$3' space='$3'>
                 <XStack px='$3' alignItems='center' space='$3'>
                     <YStack alignItems='flex-start'>

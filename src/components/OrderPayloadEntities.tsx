@@ -48,7 +48,7 @@ const OrderPayloadEntities = ({ order, onPress }) => {
     if (entities.length === 0 && entitiesByDestination.length === 0) {
         return (
             <YStack py='$5' alignItems='center' justifyContent='center'>
-                <Text color='$textSecondary'>Empty Payload.</Text>
+                <Text color='$textSecondary'>Prazan sadržaj.</Text>
             </YStack>
         );
     }

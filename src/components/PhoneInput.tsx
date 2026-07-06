@@ -91,7 +91,7 @@ const PhoneInput = ({ value, onChange, bg, width = '100%', defaultCountryCode = 
                     size={size}
                     ref={phoneInputRef}
                     flex={1}
-                    placeholder='Enter phone number'
+                    placeholder='Unesite broj telefona'
                     keyboardType='phone-pad'
                     value={phoneNumber}
                     onChangeText={setPhoneNumber}
@@ -123,7 +123,7 @@ const PhoneInput = ({ value, onChange, bg, width = '100%', defaultCountryCode = 
                     <YStack px='$2'>
                         <BottomSheetTextInput
                             ref={searchInputRef}
-                            placeholder='Search country'
+                            placeholder='Pretraži državu'
                             onChangeText={setSearchTerm}
                             autoCapitalize={false}
                             autoComplete='off'

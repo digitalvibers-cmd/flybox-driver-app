@@ -137,8 +137,11 @@ const DriverAccountScreen = () => {
         }
     };
 
+    const schemeLabels = { light: 'svetli', dark: 'tamni' };
+    const getSchemeLabel = (scheme) => schemeLabels[scheme] ?? titleize(scheme);
+
     const handleSelectScheme = () => {
-        const options = [...schemes.map((scheme) => titleize(scheme)), t('common.cancel')];
+        const options = [...schemes.map((scheme) => getSchemeLabel(scheme)), t('common.cancel')];
         showActionSheet({
             options,
             cancelButtonIndex: options.length - 1,
@@ -146,7 +149,7 @@ const DriverAccountScreen = () => {
                 if (buttonIndex !== options.length - 1) {
                     const selectedScheme = schemes[buttonIndex];
                     changeScheme(selectedScheme);
-                    toast.success(t('AccountScreen.schemeChanged', { selectedScheme }), {
+                    toast.success(t('AccountScreen.schemeChanged', { selectedScheme: getSchemeLabel(selectedScheme) }), {
                         position: ToastPosition.BOTTOM,
                     });
                 }
@@ -255,7 +258,7 @@ const DriverAccountScreen = () => {
             title: t('AccountScreen.theme'),
             rightComponent: (
                 <Text color='$textSecondary' opacity={0.5}>
-                    {titleize(userColorScheme)}
+                    {getSchemeLabel(userColorScheme)}
                 </Text>
             ),
             onPress: handleSelectScheme,

@@ -157,7 +157,7 @@ export function formatCurrency(amount = 0, currency = 'USD', currencyDisplay = '
 
 export function formatMeters(meters) {
     if (meters < 1000) {
-        return `${meters} meters`;
+        return `${meters} m`;
     } else {
         const km = meters / 1000;
         // Round to one decimal place
@@ -378,12 +378,12 @@ export function formatWhatsAppTimestamp(date) {
 
     // Less than 1 minute ago
     if (minutesDiff < 1) {
-        return 'Just now';
+        return 'Upravo sada';
     }
 
     // Less than 60 minutes ago
     if (minutesDiff < 60) {
-        return `${minutesDiff} minute${minutesDiff > 1 ? 's' : ''} ago`;
+        return `pre ${minutesDiff} min`;
     }
 
     // Same day
@@ -393,7 +393,7 @@ export function formatWhatsAppTimestamp(date) {
 
     // Yesterday
     if (isYesterday(date)) {
-        return 'Yesterday';
+        return 'Juče';
     }
 
     // Within the current week (not including today or yesterday)
@@ -408,6 +408,18 @@ export function formatWhatsAppTimestamp(date) {
 
     // Older than this year
     return format(date, 'MM/dd/yy'); // 03/05/24
+}
+
+// Serbian plural selection: pass [one, few, many] forms.
+//   1, 21, 31…    -> one  (1 porudžbina)
+//   2–4, 22–24…   -> few  (2 porudžbine)
+//   0, 5–20, 25…  -> many (5 porudžbina)
+export function pluralizeSr(count, [one, few, many]) {
+    const mod10 = count % 10;
+    const mod100 = count % 100;
+    if (mod10 === 1 && mod100 !== 11) return one;
+    if (mod10 >= 2 && mod10 <= 4 && !(mod100 >= 12 && mod100 <= 14)) return few;
+    return many;
 }
 
 export function smartHumanize(string) {

@@ -85,7 +85,7 @@ const OrderActivitySelect = forwardRef(({ onChange, waypoint, activities = [], s
                                     space='$2'
                                 >
                                     <FontAwesomeIcon icon={faLightbulb} color={theme['$warningText'].val} />
-                                    <Text color='$warningText'>Requires proof of delivery</Text>
+                                    <Text color='$warningText'>Zahteva potvrdu isporuke</Text>
                                 </XStack>
                             )}
                         </YStack>
@@ -115,13 +115,13 @@ const OrderActivitySelect = forwardRef(({ onChange, waypoint, activities = [], s
                         <YStack>
                             <XStack alignItems='center' justifyContent='space-between' px='$5' mb='$4'>
                                 <Text fontSize='$6' color='$textPrimary' fontWeight='bold'>
-                                    Select activity
+                                    Izaberite aktivnost
                                 </Text>
                             </XStack>
                             {waypoint && (
                                 <YStack px='$3' pt='$4' mb='$4' borderTopWidth={1} borderBottomWidth={1} borderColor='$infoBorder' bg='$info'>
                                     <Text color='$infoText' fontWeight={17} fontWeight='bold' mb='$2' textTransform='uppercase'>
-                                        Updating activity for:
+                                        Ažuriranje aktivnosti za:
                                     </Text>
                                     <WaypointItem
                                         waypoint={waypoint.serialize()}

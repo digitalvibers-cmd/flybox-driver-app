@@ -69,7 +69,7 @@ const ChatKeyboard = ({ onSend, onAttach, onCamera, onFocus, onBlur }) => {
                             maxHeight={INPUT_MAX_HEIGHT}
                             textAlignVertical='top'
                             lineHeight={20}
-                            placeholder='Type a message'
+                            placeholder='Napišite poruku'
                             multiline
                             backgroundColor='$surface'
                             borderColor='$borderColor'

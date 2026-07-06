@@ -33,7 +33,7 @@ const OrderCustomerCard = ({ customer }) => {
                         <Button.Icon>
                             <FontAwesomeIcon icon={faPhone} color={theme.infoText.val} />
                         </Button.Icon>
-                        <Button.Text color='$infoText'>Call</Button.Text>
+                        <Button.Text color='$infoText'>Pozovi</Button.Text>
                     </Button>
                     <Button bg='$info' size='$3' borderWidth={1} borderColor='$infoBorder'>
                         <Button.Icon>
@@ -45,7 +45,7 @@ const OrderCustomerCard = ({ customer }) => {
                         <Button.Icon>
                             <FontAwesomeIcon icon={faMessage} color={theme.infoText.val} />
                         </Button.Icon>
-                        <Button.Text color='$infoText'>Chat</Button.Text>
+                        <Button.Text color='$infoText'>Poruka</Button.Text>
                     </Button>
                 </XStack>
             </YStack>

@@ -8,7 +8,7 @@ const FleetScreen = () => {
     return (
         <YStack flex='$1' bg='$background'>
             <YStack alignItems='center' justifyContent='center'>
-                <Text>FleetScreen</Text>
+                <Text>Vozni park</Text>
             </YStack>
         </YStack>
     );

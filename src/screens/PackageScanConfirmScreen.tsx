@@ -81,7 +81,7 @@ const PackageScanConfirmScreen = () => {
             await adapter.post('orders/scan-assign', { code });
             // Refresh the driver's order list so the new order shows immediately.
             await Promise.resolve(reloadActiveOrders?.()).catch(() => {});
-            toast.success('Package assigned to you.');
+            toast.success('Paket je dodeljen vama.');
 
             // Reset the scan flow and switch to the Orders tab where the order now appears.
             const parent = navigation.getParent();
@@ -94,26 +94,26 @@ const PackageScanConfirmScreen = () => {
             const status = error?.response?.status ?? error?.status;
             const serverMsg = error?.response?.data?.error ?? error?.data?.error;
             if (status === 409) {
-                toast.error('Package already assigned to another driver.');
+                toast.error('Paket je već dodeljen drugom vozaču.');
             } else if (status === 404) {
-                toast.error('Package not found.');
+                toast.error('Paket nije pronađen.');
             } else if (status === 403) {
-                toast.error('You cannot take this package.');
+                toast.error('Ne možete preuzeti ovaj paket.');
             } else {
-                toast.error(serverMsg || 'Could not assign package. Please try again.');
+                toast.error(serverMsg || 'Nije moguće dodeliti paket. Pokušajte ponovo.');
             }
             setIsAssigning(false);
         }
     }, [adapter, code, isAssigning, isAssignedToOther, navigation, reloadActiveOrders]);
 
-    const assignLabel = isAssignedToMe ? 'Confirm & open' : 'Assign package';
+    const assignLabel = isAssignedToMe ? 'Potvrdi i otvori' : 'Dodeli paket';
 
     return (
         <SafeAreaView style={[styles.flex, { backgroundColor: theme.background.val }]}>
             {/* Header */}
             <XStack ai='center' jc='space-between' px='$4' py='$3'>
                 <Text color='$textPrimary' fontSize={20} fontWeight='bold'>
-                    Package details
+                    Detalji paketa
                 </Text>
                 <Button size='$3' circular icon={<FontAwesomeIcon icon={faTimes} color={theme.textPrimary.val} />} onPress={() => navigation.goBack()} />
             </XStack>
@@ -135,7 +135,7 @@ const PackageScanConfirmScreen = () => {
                         <XStack bg='$error' borderColor='$errorBorder' borderWidth={1} borderRadius='$4' px='$3' py='$3' ai='center' space='$2'>
                             <FontAwesomeIcon icon={faTriangleExclamation} color={theme.errorText.val} />
                             <Text color='$errorText' flex={1}>
-                                This package is already assigned to another driver.
+                                Ovaj paket je već dodeljen drugom vozaču.
                             </Text>
                         </XStack>
                     ) : null}
@@ -144,7 +144,7 @@ const PackageScanConfirmScreen = () => {
                         <XStack bg='$info' borderColor='$infoBorder' borderWidth={1} borderRadius='$4' px='$3' py='$3' ai='center' space='$2'>
                             <FontAwesomeIcon icon={faBoxOpen} color={theme.infoText.val} />
                             <Text color='$infoText' flex={1}>
-                                This package is already assigned to you.
+                                Ovaj paket je već dodeljen vama.
                             </Text>
                         </XStack>
                     ) : null}
@@ -152,7 +152,7 @@ const PackageScanConfirmScreen = () => {
                     {/* Pickup */}
                     {payload.pickup ? (
                         <YStack>
-                            <SectionLabel>Pickup</SectionLabel>
+                            <SectionLabel>Preuzimanje</SectionLabel>
                             <PlaceLine place={payload.pickup} />
                         </YStack>
                     ) : null}
@@ -160,24 +160,24 @@ const PackageScanConfirmScreen = () => {
                     {/* Dropoff */}
                     {payload.dropoff ? (
                         <YStack>
-                            <SectionLabel>Dropoff</SectionLabel>
+                            <SectionLabel>Isporuka</SectionLabel>
                             <PlaceLine place={payload.dropoff} />
                         </YStack>
                     ) : null}
 
                     {/* Details */}
                     <YStack bg='$surface' borderWidth={1} borderColor='$borderColorWithShadow' borderRadius='$4' px='$4' py='$2'>
-                        <DetailRow label='Created' value={formatDateTime(order.created_at)} />
+                        <DetailRow label='Kreirano' value={formatDateTime(order.created_at)} />
                         <Separator />
-                        <DetailRow label='Scheduled' value={formatDateTime(order.scheduled_at)} />
+                        <DetailRow label='Zakazano' value={formatDateTime(order.scheduled_at)} />
                         <Separator />
-                        <DetailRow label='Recipient phone' value={recipientPhone} />
+                        <DetailRow label='Telefon primaoca' value={recipientPhone} />
                         <Separator />
-                        <DetailRow label='Cash on delivery' value={codAmount ? `${codAmount} RSD` : '—'} />
+                        <DetailRow label='Pouzeće' value={codAmount ? `${codAmount} RSD` : '—'} />
                         {order.notes ? (
                             <>
                                 <Separator />
-                                <DetailRow label='Notes' value={order.notes} />
+                                <DetailRow label='Napomene' value={order.notes} />
                             </>
                         ) : null}
                     </YStack>
@@ -188,7 +188,7 @@ const PackageScanConfirmScreen = () => {
             <Separator />
             <XStack px='$4' py='$3' gap='$3'>
                 <Button flex={1} chromeless borderWidth={1} borderColor='$borderColorWithShadow' onPress={() => navigation.goBack()} disabled={isAssigning}>
-                    <Text color='$textPrimary'>Cancel</Text>
+                    <Text color='$textPrimary'>Otkaži</Text>
                 </Button>
                 <Button flex={2} backgroundColor={isAssignedToOther ? '$gray-400' : theme.primary.val} disabled={isAssigning || isAssignedToOther} onPress={handleConfirm}>
                     <XStack ai='center' space='$2'>

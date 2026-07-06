@@ -58,8 +58,8 @@ export const LocationProvider = ({ children }) => {
             return new Place(
                 {
                     id: 'driver',
-                    name: 'Driver Location',
-                    street1: 'Driver Location',
+                    name: 'Lokacija vozača',
+                    street1: 'Lokacija vozača',
                     location: new Point(coords.latitude, coords.longitude),
                     ...attributes,
                 },

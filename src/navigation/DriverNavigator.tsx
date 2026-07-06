@@ -84,7 +84,7 @@ function createTabScreens() {
         DriverDashboardTab: {
             screen: DriverDashboardTab,
             options: {
-                tabBarLabel: config('DRIVER_DASHBOARD_TAB_LABEL', 'Dash'),
+                tabBarLabel: config('DRIVER_DASHBOARD_TAB_LABEL', 'Početna'),
             },
         },
         DriverTaskTab: {
@@ -93,7 +93,7 @@ function createTabScreens() {
                 const { allActiveOrders } = useOrderManager();
 
                 return {
-                    tabBarLabel: config('DRIVER_ORDER_TAB_LABEL', 'Orders'),
+                    tabBarLabel: config('DRIVER_ORDER_TAB_LABEL', 'Porudžbine'),
                     tabBarBadge: allActiveOrders.length,
                     tabBarBadgeStyle: {
                         marginRight: -5,
@@ -106,7 +106,7 @@ function createTabScreens() {
             screen: DriverReportTab,
             options: () => {
                 return {
-                    tabBarLabel: config('DRIVER_REPORT_TAB_LABEL', 'Reports'),
+                    tabBarLabel: config('DRIVER_REPORT_TAB_LABEL', 'Izveštaji'),
                 };
             },
         },
@@ -116,7 +116,7 @@ function createTabScreens() {
                 const { unreadCount } = useChat();
 
                 return {
-                    tabBarLabel: config('DRIVER_CHAT_TAB_LABEL', 'Chat'),
+                    tabBarLabel: config('DRIVER_CHAT_TAB_LABEL', 'Poruke'),
                     tabBarBadge: unreadCount,
                     tabBarBadgeStyle: {
                         marginRight: -5,
@@ -129,7 +129,7 @@ function createTabScreens() {
             screen: DriverAccountTab,
             options: () => {
                 return {
-                    tabBarLabel: config('DRIVER_ACCOUNT_TAB_LABEL', 'Account'),
+                    tabBarLabel: config('DRIVER_ACCOUNT_TAB_LABEL', 'Nalog'),
                 };
             },
         },
@@ -324,7 +324,7 @@ const DriverReportTab = createNativeStackNavigator({
                     headerTitle: '',
                     headerLeft: (props) => (
                         <Text color='$textPrimary' fontSize={20} fontWeight='bold'>
-                            Create a new Fuel Report
+                            Novi izveštaj o gorivu
                         </Text>
                     ),
                     headerRight: (props) => <HeaderButton icon={faTimes} onPress={() => navigation.goBack()} />,
@@ -388,7 +388,7 @@ const DriverReportTab = createNativeStackNavigator({
                     headerTitle: '',
                     headerLeft: (props) => (
                         <Text color='$textPrimary' fontSize={20} fontWeight='bold'>
-                            Create a new Issue
+                            Nova prijava
                         </Text>
                     ),
                     headerRight: (props) => <HeaderButton icon={faTimes} onPress={() => navigation.goBack()} />,

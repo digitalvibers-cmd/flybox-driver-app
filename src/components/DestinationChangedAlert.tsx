@@ -27,16 +27,16 @@ const DestinationChangedAlert: React.FC<DestinationChangedAlertProps> = ({ visib
                         <XStack space='$2' px='$4' py='$4' alignItems='center' borderBottomWidth={1} borderColor='$infoBorder'>
                             <FontAwesomeIcon icon={faCheck} color={theme['$green-500'].val} />
                             <Text fontSize='$6' fontWeight='bold' color='$textPrimary'>
-                                Waypoint Completed
+                                Tačka rute završena
                             </Text>
                         </XStack>
                         <YStack py='$2'>
                             <YStack mt='$3' space='$2' px='$4'>
                                 <Text fontSize='$4' color='$textSecondary'>
-                                    Activity for waypoint <Text color='$infoText'>{prevAddress}</Text> is complete.
+                                    Aktivnost za tačku rute <Text color='$infoText'>{prevAddress}</Text> je završena.
                                 </Text>
                                 <Text fontSize='$4' color='$textSecondary'>
-                                    Your current destination has changed to <Text color='$infoText'>{currAddress}</Text>.
+                                    Vaše trenutno odredište je promenjeno na <Text color='$infoText'>{currAddress}</Text>.
                                 </Text>
                             </YStack>
                             <YStack mt='$5' px='$4'>
@@ -48,7 +48,7 @@ const DestinationChangedAlert: React.FC<DestinationChangedAlertProps> = ({ visib
                     <YStack mt='$4' borderTopWidth={1} borderColor='$infoBorder' alignItems='center' justifyContent='center'>
                         <Button onPress={onClose} width='100%' height='$5'>
                             <Button.Text fontSize='$5' fontWeight='bold'>
-                                Continue
+                                Nastavi
                             </Button.Text>
                         </Button>
                     </YStack>
