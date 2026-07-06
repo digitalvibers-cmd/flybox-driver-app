@@ -90,6 +90,7 @@ android {
             appLinkScheme: project.env.get("APP_LINK_PREFIX") ?: "flbnavigator"
         ]
         resValue "string", "build_config_package", "io.fleetbase.navigator"
+        resValue "string", "GOOGLE_MAPS_API_KEY", (project.env.get("GOOGLE_MAPS_API_KEY") ?: "")
     }
     signingConfigs {
         release {

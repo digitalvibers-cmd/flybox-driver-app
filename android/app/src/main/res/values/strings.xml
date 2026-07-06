@@ -4,5 +4,4 @@
     <string name="facebook_client_token" tools:ignore="ResourceCycle">@string/facebook_client_token</string>
     <string name="FACEBOOK_APP_ID">000000000000000</string>
     <string name="FACEBOOK_CLIENT_TOKEN">PLACEHOLDER_FB_CLIENT_TOKEN</string>
-    <string name="GOOGLE_MAPS_API_KEY">PLACEHOLDER_MAPS_KEY_INJECT_AT_RUNTIME</string>
 </resources>
