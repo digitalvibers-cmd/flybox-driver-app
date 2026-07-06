@@ -200,10 +200,11 @@ Real Firebase project not yet set up. We have a placeholder JSON with `package_n
 
 ### 5. `android/app/src/main/res/values/strings.xml` — placeholder string resources
 
-The manifest references `@string/TRANSISTORSOFT_LICENSE_KEY`, `@string/FACEBOOK_APP_ID`, `@string/FACEBOOK_CLIENT_TOKEN`, `@string/GOOGLE_MAPS_API_KEY`. These are placeholder strings in `strings.xml` to satisfy resource linking. Real values needed for:
-- Background geolocation (Transistorsoft) — paid license required
+The manifest references `@string/FACEBOOK_APP_ID`, `@string/FACEBOOK_CLIENT_TOKEN`, `@string/GOOGLE_MAPS_API_KEY`. These are placeholder strings in `strings.xml` to satisfy resource linking. Real values needed for:
 - Facebook login — not used in our flow, but Manifest references it
 - Google Maps API key — `react-native-config` reads `.env`'s `GOOGLE_MAPS_API_KEY` but the manifest meta-data still references the string resource directly; either inject at build time via Gradle `manifestPlaceholders` or paste real key into strings.xml
+
+> **Background location (updated):** the paid `react-native-background-geolocation` (Transistorsoft) plugin was **removed** — in release builds it threw a "License validation failure" alert on every launch because we only shipped a placeholder license key. It is replaced by a self-contained native Kotlin foreground service (`android/app/src/main/java/io/fleetbase/navigator/location/`, `FusedLocationProviderClient` + `FOREGROUND_SERVICE_TYPE_LOCATION` + ongoing notification), driven from JS via `src/services/location-tracking.js` and `src/contexts/LocationContext.tsx`; `@react-native-community/geolocation` handles one-shot foreground reads. No license or paid dependency. Needs the `ACCESS_BACKGROUND_LOCATION` ("Allow all the time") permission for background tracking.
 
 ### 6. Yarn Berry, NOT classic
 
@@ -334,7 +335,7 @@ Tracked in `/Users/buco/.claude/plans/zelim-da-analiziras-i-glistening-pearl.md`
 2. **QR self-assign feature** — ✅ DONE. `src/screens/PackageScanScreen.tsx` + `PackageScanConfirmScreen.tsx` (reuse `QrCodeScanner`), Dash button, `src/utils/custom-fields.ts`. Backend endpoints are **`POST /v1/orders/scan-resolve`** and **`/v1/orders/scan-assign`** in the embedded fleetops `Api\v1\OrderController` (NOT a custom package, NOT `/int/v1/` — the SDK uses the public `/v1/` namespace; auth via `session('user')`/`session('company')` since `$request->user()` is null there). Custom field values come flattened as top-level underscored keys on the `/v1/` order (e.g. `order.cena_otkupa`), not `custom_field_values[]`. See Fleet Vibe `CLAUDE.md` for the backend details.
 3. **Persist `cli.js` patch** as a yarn berry patch in `.yarn/patches/` + `resolutions` entry.
 4. **Real Firebase project** — replace placeholder `google-services.json`. Required for push notifications.
-5. **Real string resources** for Transistorsoft license + Facebook IDs (or strip Facebook out if unused).
+5. **Real string resources** for Facebook IDs (or strip Facebook out if unused). _(Transistorsoft license no longer needed — background geolocation replaced by a native foreground service; see section 5 above.)_
 6. **CI/CD** — ✅ DONE. `.github/workflows/flybox-apk.yml` builds a signed APK on push to `flybox/main` and self-hosts it at https://fleetvibe.digitalvibe.rs/app/flybox-driver.apk. See "CI/CD & Distribution" section above + `DISTRIBUCIJA.md`. (Firebase App Distribution still optional future improvement.)
 7. **Localization** — Navigator uses `react-native-i18n`; add `sr.json` (Serbian).
 8. **iOS** — currently deferred; will require Xcode + CocoaPods + Apple Developer account.
