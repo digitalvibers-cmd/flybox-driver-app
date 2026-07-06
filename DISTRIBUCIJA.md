@@ -62,6 +62,9 @@ Pošto APK ne dolazi sa Play Store-a, Android ga podrazumevano blokira dok ne uk
 
 6. **Preuzimanje u pregledaču** — otvori link u **Chrome**-u (ne u in-app pregledaču iz WhatsApp/Viber-a). Ako se link otvori kao tekst umesto da se preuzme: drži prst na linku → **"Download link / Sačuvaj link"**.
 
+7. **Praćenje lokacije u pozadini** — pri prvom prelasku na **Online**, aplikacija traži dozvolu za lokaciju. Izaberi **"Dozvoli sve vreme" (Allow all the time)** da bi dispečer video poziciju i kad je app u pozadini, ekran ugašen ili dok koristiš navigaciju. Ako izabereš samo "Dok koristim aplikaciju", praćenje staje čim se app minimizuje. Dok je praćenje aktivno, u statusnoj traci stoji notifikacija „Praćenje lokacije je aktivno".
+   - **Xiaomi / Redmi / POCO i Samsung** agresivno gase pozadinske servise. Ako se praćenje prekida kad je ekran ugašen: Podešavanja → **Baterija** → nađi **FlyBox Driver** → postavi na **"Bez ograničenja / Not optimized / Ne štedi bateriju"**. Na Xiaomi-ju dodatno dozvoli **Autostart** za aplikaciju.
+
 > Sve ove dozvole se traže **samo prvi put**. Kasniji update-i (isti link) instaliraju se bez ponovnog podešavanja.
 
 ## Ažuriranje na novu verziju
@@ -76,3 +79,4 @@ Kad stigne nova verzija, vozač samo **ponovo otvori isti link**, preuzme i inst
 
 - **"App not installed" / "Aplikacija nije instalirana":** najčešće nema dovoljno memorije na telefonu (oslobodi ~300 MB) ili je ostala stara verzija sa drugačijim potpisom (deinstaliraj staru pa probaj ponovo).
 - **Link se otvara kao tekst umesto da se preuzima:** koristi Chrome (ne in-app browser iz WhatsApp-a); ili "Download link" / "Sačuvaj link".
+- **Dispečer ne vidi vozača / pozicija se ne ažurira:** proveri da je vozač **Online** i da je data dozvola **"Dozvoli sve vreme"** za lokaciju; na Xiaomi/Samsung telefonima isključi optimizaciju baterije za FlyBox Driver (vidi tačku 7 gore).
