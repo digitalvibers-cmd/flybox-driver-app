@@ -25,7 +25,7 @@ const ProofOfDeliveryScreen = ({ route }) => {
     const { setValue } = useTempStore();
     const { screenWidth, screenHeight } = useDimensions();
     const [isLoading, setIsLoading] = useState(false);
-    const [loadingOverlayMessage, setLoadingOverlayMessage] = useState('Capturing Proof of Delivery...');
+    const [loadingOverlayMessage, setLoadingOverlayMessage] = useState('Beleženje potvrde isporuke...');
     const signatureScreenRef = useRef();
     const params = route.params ?? {};
     const activity = params.activity;
@@ -52,7 +52,7 @@ const ProofOfDeliveryScreen = ({ route }) => {
                 setValue('proof', { proof, activity, order: order.id, waypoint: waypoint?.id, entity: entity?.id });
                 navigation.goBack();
             } catch (err) {
-                toast.error(err.message ?? 'Unable to validate captured QR Code.');
+                toast.error(err.message ?? 'Nije moguće proveriti očitani QR kod.');
                 console.warn('Error capturing QR code as proof:', err);
             } finally {
                 setIsLoading(false);
@@ -70,7 +70,7 @@ const ProofOfDeliveryScreen = ({ route }) => {
                 setValue('proof', { proof, activity, order: order.id, waypoint: waypoint?.id, entity: entity?.id });
                 navigation.goBack();
             } catch (err) {
-                toast.error(err.message ?? 'Something went wrong saving the signature.');
+                toast.error(err.message ?? 'Došlo je do greške pri čuvanju potpisa.');
                 console.warn('Error capturing signature as proof:', err);
             } finally {
                 setIsLoading(false);
@@ -108,7 +108,7 @@ const ProofOfDeliveryScreen = ({ route }) => {
                 setValue('proof', { proof, activity, order: order.id, waypoint: waypoint?.id, entity: entity?.id });
                 navigation.goBack();
             } catch (err) {
-                toast.error(err.message ?? 'Unable to upload captured photos.');
+                toast.error(err.message ?? 'Nije moguće otpremiti snimljene fotografije.');
                 console.warn('Error capturing photos as proof:', err);
             } finally {
                 setIsLoading(false);

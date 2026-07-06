@@ -54,15 +54,15 @@ const ChatParticipantsScreen = ({ route }) => {
     const handleRemoveParticipant = useCallback(
         (participant) => {
             Alert.alert(
-                'Confirmation',
-                'Are you sure you wish to remove this participant from the chat?',
+                'Potvrda',
+                'Da li ste sigurni da želite da uklonite ovog učesnika iz razgovora?',
                 [
                     {
-                        text: 'Cancel',
+                        text: 'Otkaži',
                         style: 'cancel',
                     },
                     {
-                        text: 'Remove Participant',
+                        text: 'Ukloni učesnika',
                         onPress: async () => {
                             synchronouslyRemoveParticipant(participant);
                             await removeParticipant(channel, participant);
@@ -127,7 +127,7 @@ const ChatParticipantsScreen = ({ route }) => {
                                     <Button.Icon>
                                         <FontAwesomeIcon icon={faTrash} color={theme['$errorText'].val} />
                                     </Button.Icon>
-                                    <Button.Text color='$errorText'>Remove</Button.Text>
+                                    <Button.Text color='$errorText'>Ukloni</Button.Text>
                                 </Button>
                             </YStack>
                         )}
@@ -151,7 +151,7 @@ const ChatParticipantsScreen = ({ route }) => {
                         </YStack>
                         <YStack>
                             <Text color='$textPrimary' fontSize={24} fontWeight='bold'>
-                                Participants
+                                Učesnici
                             </Text>
                         </YStack>
                     </XStack>
@@ -160,7 +160,7 @@ const ChatParticipantsScreen = ({ route }) => {
                             <Button.Icon>
                                 <FontAwesomeIcon icon={faPlus} color={theme['$infoText'].val} />
                             </Button.Icon>
-                            <Button.Text color='$infoText'>Add Participant</Button.Text>
+                            <Button.Text color='$infoText'>Dodaj učesnika</Button.Text>
                         </Button>
                     </YStack>
                 </XStack>
@@ -201,7 +201,7 @@ const ChatParticipantsScreen = ({ route }) => {
                         </Pressable>
                     );
                 }}
-                title='Select Participant'
+                title='Izaberite učesnika'
                 virtual={true}
                 renderInPlace={false}
                 portalHost='ChatParticipantsPortal'

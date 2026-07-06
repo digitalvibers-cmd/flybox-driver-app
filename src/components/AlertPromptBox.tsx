@@ -19,17 +19,17 @@ const AlertPromptBox: React.FC<AlertPromptBoxProps> = ({
     prompt,
     promptTitle,
     onConfirm,
-    confirmButtonText = 'Confirm',
-    confirmAlertButtonText = 'OK',
-    confirmTitle = 'Confirmation',
-    confirmMessage = 'Are you sure you want to proceed?',
+    confirmButtonText = 'Potvrdi',
+    confirmAlertButtonText = 'U redu',
+    confirmTitle = 'Potvrda',
+    confirmMessage = 'Da li ste sigurni da želite da nastavite?',
     colorScheme = 'blue',
     ...props
 }) => {
     const theme = useTheme();
     const handlePress = () => {
         Alert.alert(confirmTitle, confirmMessage, [
-            { text: 'Cancel', style: 'cancel' },
+            { text: 'Otkaži', style: 'cancel' },
             { text: confirmAlertButtonText, onPress: () => onConfirm() },
         ]);
     };

@@ -46,7 +46,7 @@ const useOAuth = () => {
 
         try {
             if (!appleAuth.isSupported) {
-                return toast.error('Apple Sign-In is not supported on this device');
+                return toast.error('Apple prijava nije podržana na ovom uređaju');
             }
 
             // Perform Apple Sign-In
@@ -58,7 +58,7 @@ const useOAuth = () => {
 
             const { identityToken, authorizationCode, email, fullName, user: appleUserId } = appleAuthResponse;
             if (!identityToken || !authorizationCode) {
-                return toast.error('Apple Sign-In failed: Missing token or authorization code.');
+                return toast.error('Apple prijava nije uspela: nedostaje token ili autorizacioni kod.');
             }
 
             // Get the user's name

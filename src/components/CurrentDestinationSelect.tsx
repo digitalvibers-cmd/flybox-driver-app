@@ -96,7 +96,7 @@ const CurrentDestinationSelect = ({ onChange, destination, waypoints = [], snapT
                         <YStack>
                             <XStack alignItems='center' justifyContent='space-between' px='$5' mb='$4'>
                                 <Text fontSize='$6' color='$textPrimary' fontWeight='bold'>
-                                    Select destination
+                                    Izaberite odredište
                                 </Text>
                             </XStack>
                             <BottomSheetFlatList

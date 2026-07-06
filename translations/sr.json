@@ -1,0 +1,89 @@
+{
+    "common": {
+        "fleetbase": "Fleetbase",
+        "navigator": "Navigator",
+        "storefront": "Prodavnica",
+        "apiKey": "API ključ",
+        "cancel": "Otkaži",
+        "new": "Novo",
+        "create": "Kreiraj",
+        "save": "Sačuvaj",
+        "delete": "Obriši",
+        "edit": "Izmeni",
+        "update": "Ažuriraj",
+        "service": "Usluga",
+        "retry": "Pokušaj ponovo",
+        "loading": "Učitavanje...",
+        "confirm": "Potvrdi",
+        "confirmation": "Potvrda",
+        "ok": "U redu",
+        "done": "Gotovo",
+        "tryAgain": "Pokušaj ponovo"
+    },
+    "orderStatuses": {
+        "created": "Kreirana",
+        "preparing": "Priprema",
+        "dispatched": "Otpremljena",
+        "driver_enroute": "Vozač u dolasku",
+        "pending": "Na čekanju",
+        "in_progress": "U toku",
+        "completed": "Završena"
+    },
+    "BootScreen": {
+        "missingRequiredConfigurationKeys": "Nedostaju obavezni konfiguracioni ključevi"
+    },
+    "AccountScreen": {
+        "changeProfilePhotoOptions": {
+            "takePhoto": "Slikaj",
+            "photoLibrary": "Galerija fotografija",
+            "deleteProfilePhoto": "Obriši profilnu sliku"
+        },
+        "profilePhoto": "Profilna slika",
+        "email": "Email",
+        "phoneNumber": "Broj telefona",
+        "name": "Ime",
+        "language": "Jezik",
+        "theme": "Tema",
+        "deleteAccount": "Obriši nalog",
+        "termsOfService": "Uslovi korišćenja",
+        "privacyPolicy": "Politika privatnosti",
+        "tracking": "Praćenje",
+        "account": "Nalog",
+        "dataProtection": "Zaštita podataka",
+        "clearCache": "Obriši keš",
+        "signOut": "Odjavi se",
+        "signedOut": "Odjavljeni ste.",
+        "cacheCleared": "Keš je obrisan.",
+        "schemeChanged": "Sada koristite {{selectedScheme}} režim.",
+        "languageChanged": "Sada koristite {{selectedLanguage}}.",
+        "photoChanged": "Profilna slika je promenjena.",
+        "photoRemoved": "Profilna slika je uklonjena."
+    },
+    "ProfileScreen": {
+        "organizationChanged": "Prebačeno na organizaciju {{selectedOrganization}}."
+    },
+    "AddNewLocationScreen": {
+        "addNewAddress": "Dodaj novu adresu",
+        "streetName": "Naziv ulice i broj",
+        "weThinkYoureAroundHere": "Mislimo da se nalazite ovde",
+        "cantFindYourAddress": "Ne možete da pronađete svoju adresu?",
+        "useMapInstead": "Umesto toga koristite mapu"
+    },
+    "SetupWarningScreen": {
+        "configurationMissing": "Nedostaje konfiguracija!",
+        "unconfiguredApp": "Izgleda da niste ispravno podesili aplikaciju.",
+        "envMissing": "nedostaje u okruženju!"
+    },
+    "DriverReportScreen": {},
+    "LocationPermissionScreen": {
+        "enableLocationServices": "Omogući lokacijske usluge",
+        "enableLocationPrompt": "Potrebna nam je vaša lokacija za praćenje i ažuriranja u realnom vremenu. Dozvolite pristup da biste nastavili.",
+        "shareAndContinue": "Podeli i nastavi",
+        "permissionNeededTitle": "Potrebna je dozvola za lokaciju",
+        "enableInSettingsTitle": "Omogući lokaciju u podešavanjima",
+        "permissionDeniedPrompt": "Bez pristupa lokaciji neke funkcije neće raditi. Želite li da sada dozvolite pristup?",
+        "locationBlockedPrompt": "Pristup lokaciji je blokiran. Otvorite Podešavanja i omogućite ga da biste nastavili.",
+        "goToSettings": "Idi na podešavanja",
+        "skipForNow": "Preskoči za sada"
+    }
+}

@@ -33,11 +33,11 @@ const PackageScanScreen = () => {
             } catch (error) {
                 const status = error?.response?.status ?? error?.status;
                 if (status === 404) {
-                    toast.error('Package not found.');
+                    toast.error('Paket nije pronađen.');
                 } else if (status === 403) {
-                    toast.error('This package belongs to another company.');
+                    toast.error('Ovaj paket pripada drugoj kompaniji.');
                 } else {
-                    toast.error('Could not read package. Please try again.');
+                    toast.error('Nije moguće očitati paket. Pokušajte ponovo.');
                 }
                 // Allow another attempt after a failed lookup.
                 lockRef.current = false;
@@ -60,7 +60,7 @@ const PackageScanScreen = () => {
                 <View position='absolute' bottom='$8' left={0} right={0} alignItems='center' px='$4'>
                     <XStack bg='$surface' borderRadius='$4' px='$4' py='$3' alignItems='center' space='$2' borderWidth={1} borderColor='$borderColorWithShadow'>
                         <FontAwesomeIcon icon={faQrcode} color={theme.textPrimary.val} />
-                        <Text color='$textPrimary'>Point the camera at the package QR code</Text>
+                        <Text color='$textPrimary'>Usmerite kameru ka QR kodu paketa</Text>
                     </XStack>
                 </View>
 

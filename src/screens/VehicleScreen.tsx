@@ -8,7 +8,7 @@ const VehicleScreen = () => {
     return (
         <YStack flex='$1' bg='$background'>
             <YStack alignItems='center' justifyContent='center'>
-                <Text>VehicleScreen</Text>
+                <Text>Vozilo</Text>
             </YStack>
         </YStack>
     );

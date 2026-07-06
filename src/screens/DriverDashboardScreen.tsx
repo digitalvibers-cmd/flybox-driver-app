@@ -31,10 +31,10 @@ const DriverDashboardScreen = () => {
                     <WidgetContainer>
                         <XStack>
                             <YStack flex={1}>
-                                <Text color='$textPrimary'>Tracking:</Text>
+                                <Text color='$textPrimary'>Praćenje:</Text>
                             </YStack>
                             <YStack flex={1} alignItems='flex-end'>
-                                <Text color={isTracking ? '$successBorder' : '$textSecondary'}>{isTracking ? 'Yes' : 'No'}</Text>
+                                <Text color={isTracking ? '$successBorder' : '$textSecondary'}>{isTracking ? 'Da' : 'Ne'}</Text>
                             </YStack>
                         </XStack>
                     </WidgetContainer>
@@ -60,7 +60,7 @@ const DriverDashboardScreen = () => {
                     <WidgetContainer flex={1} alignItems='center' justifyContent='center'>
                         <YStack>
                             <Text color='$textPrimary' fontWeight='bold' mb='$2'>
-                                Active Orders
+                                Aktivne porudžbine
                             </Text>
                         </YStack>
                         <YStack>
@@ -70,7 +70,7 @@ const DriverDashboardScreen = () => {
                     <WidgetContainer flex={1} alignItems='center' justifyContent='center'>
                         <YStack>
                             <Text color='$textPrimary' fontWeight='bold' mb='$2'>
-                                Speed
+                                Brzina
                             </Text>
                         </YStack>
                         <YStack>
@@ -90,7 +90,7 @@ const DriverDashboardScreen = () => {
                     <XStack alignItems='center' space='$3'>
                         <FontAwesomeIcon icon={faQrcode} color='white' size={22} />
                         <Text color='white' fontWeight='bold' fontSize={16}>
-                            Scan package QR code
+                            Skeniraj QR kod paketa
                         </Text>
                     </XStack>
                 </WidgetContainer>

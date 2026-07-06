@@ -107,7 +107,7 @@ const OrderProofOfDelivery = ({ order, subject }) => {
     if (proofs.length === 0) {
         return (
             <YStack py='$5' alignItems='center' justifyContent='center'>
-                <Text color='$textSecondary'>No Proof of Delivery Captured.</Text>
+                <Text color='$textSecondary'>Nije zabeležena potvrda isporuke.</Text>
             </YStack>
         );
     }

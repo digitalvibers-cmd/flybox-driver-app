@@ -45,7 +45,7 @@ const InstanceLinkHandler = ({}) => {
             logout();
 
             // Notify
-            toast.success('Instance link was successful!');
+            toast.success('Povezivanje sa instancom je uspešno!');
         },
         [logout, setInstanceLinkConfig]
     );

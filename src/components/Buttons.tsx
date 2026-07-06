@@ -14,7 +14,7 @@ export const PhoneLoginButton = ({ onPress, ...props }) => {
             <Button.Icon>
                 <FontAwesomeIcon icon={faPhone} color={theme['$textPrimary'].val} />
             </Button.Icon>
-            <Button.Text color='$textPrimary'>Continue with Phone</Button.Text>
+            <Button.Text color='$textPrimary'>Nastavi telefonom</Button.Text>
         </Button>
     );
 };

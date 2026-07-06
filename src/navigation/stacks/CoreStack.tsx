@@ -34,7 +34,7 @@ export const InstanceLink = {
             presentation: 'modal',
             headerLeft: (props) => (
                 <Text color='$textPrimary' fontSize={20} fontWeight='bold'>
-                    Connection Config
+                    Podešavanje veze
                 </Text>
             ),
             headerRight: (props) => <HeaderButton icon={faTimes} onPress={() => navigation.goBack()} />,

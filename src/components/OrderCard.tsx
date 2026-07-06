@@ -81,7 +81,7 @@ export const OrderCard = ({ order, onPress }) => {
                                 <YStack flex={1} gap='$2'>
                                     <YStack flex={1} gap='$1'>
                                         <Text color='$textPrimary' fontSize={12}>
-                                            {waypointCustomers.length > 0 ? 'Customers:' : 'Customer:'}
+                                            {waypointCustomers.length > 0 ? 'Kupci:' : 'Kupac:'}
                                         </Text>
                                         <YStack minHeight={INFO_FIELD_VALUE_MIN_HEIGHT}>
                                             {waypointCustomers.length > 0 ? (

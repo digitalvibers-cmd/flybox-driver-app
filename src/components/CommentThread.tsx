@@ -21,7 +21,7 @@ const CommentThread = ({ comments: initialComments = [], subject, onReloadCommen
 
     const isCommentInvalid = (comment) => {
         if (!comment || comment.trim().length < 2) {
-            Alert.alert('Invalid Comment', 'Comment must be at least 2 characters.');
+            Alert.alert('Neispravan komentar', 'Komentar mora imati najmanje 2 karaktera.');
             return true;
         }
         return false;
@@ -52,7 +52,7 @@ const CommentThread = ({ comments: initialComments = [], subject, onReloadCommen
             <YStack>
                 <TextArea
                     value={input}
-                    placeholder='Write a comment...'
+                    placeholder='Napišite komentar...'
                     onChangeText={setInput}
                     width='100%'
                     bg={isDarkMode ? '$secondary' : '$white'}
@@ -77,7 +77,7 @@ const CommentThread = ({ comments: initialComments = [], subject, onReloadCommen
                         <Button.Icon>
                             <FontAwesomeIcon icon={faPaperPlane} color={theme['$infoText'].val} />
                         </Button.Icon>
-                        <Button.Text color='$infoText'>Publish Comment</Button.Text>
+                        <Button.Text color='$infoText'>Objavi komentar</Button.Text>
                     </Button>
                 </XStack>
             </YStack>
