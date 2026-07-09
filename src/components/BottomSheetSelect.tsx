@@ -206,8 +206,6 @@ const BottomSheetSelect = forwardRef(
             );
         };
 
-        console.log('[BottomSheetSelect Rendered!]');
-
         return (
             <YStack>
                 {virtual === false && (

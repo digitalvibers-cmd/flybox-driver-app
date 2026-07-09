@@ -1,4 +1,4 @@
-import React, { createContext, useContext, ReactNode } from 'react';
+import React, { createContext, useContext, useMemo, ReactNode } from 'react';
 import useAppTheme from '../hooks/use-app-theme';
 
 type ThemeContextType = {
@@ -11,8 +11,9 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     const { appTheme, changeScheme, schemes } = useAppTheme();
+    const value = useMemo(() => ({ appTheme, changeScheme, schemes }), [appTheme, changeScheme, schemes]);
 
-    return <ThemeContext.Provider value={{ appTheme, changeScheme, schemes }}>{children}</ThemeContext.Provider>;
+    return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 };
 
 export const useThemeContext = (): ThemeContextType => {

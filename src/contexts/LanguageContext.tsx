@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect, useMemo, ReactNode } from 'react';
+import React, { createContext, useState, useContext, useEffect, useMemo, useCallback, ReactNode } from 'react';
 import { getLangNameFromCode } from 'language-name-map';
 import { navigatorConfig } from '../utils';
 import { getAvailableLocales } from '../utils/localize';
@@ -26,26 +26,33 @@ const LanguageContext = createContext<LanguageContextProps>({
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     const [locale, setLocaleState] = useStorage<string>('_locale', navigatorConfig('defaultLocale', 'en'));
 
-    const languages = Object.keys(I18n.translations).map((code) => {
-        return { code, ...getLangNameFromCode(code), emoji: localeEmoji(code) };
-    });
+    const languages = useMemo(() => {
+        return Object.keys(I18n.translations).map((code) => {
+            return { code, ...getLangNameFromCode(code), emoji: localeEmoji(code) };
+        });
+    }, []);
 
     const language = useMemo(() => {
         return { code: locale, ...getLangNameFromCode(locale), emoji: localeEmoji(locale) };
     }, [locale]);
 
-    const setLocale = (newLocale: string) => {
-        I18n.locale = newLocale;
-        setLocaleState(newLocale);
-    };
+    const setLocale = useCallback(
+        (newLocale: string) => {
+            I18n.locale = newLocale;
+            setLocaleState(newLocale);
+        },
+        [setLocaleState]
+    );
 
     useEffect(() => {
         I18n.locale = locale;
     }, []);
 
-    const t = (key: string, options?: Record<string, any>) => I18n.t(key, options);
+    const t = useCallback((key: string, options?: Record<string, any>) => I18n.t(key, options), []);
 
-    return <LanguageContext.Provider value={{ locale, setLocale, t, current: language, language, languages }}>{children}</LanguageContext.Provider>;
+    const value = useMemo(() => ({ locale, setLocale, t, current: language, language, languages }), [locale, setLocale, t, language, languages]);
+
+    return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
 };
 
 export const useLanguage = () => {

@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { FlatList, RefreshControl, Platform } from 'react-native';
 import { Text, YStack, XStack, Separator, useTheme } from 'tamagui';
@@ -66,13 +66,14 @@ const DriverOrderManagementScreen = () => {
     } = useOrderManager();
     const { listen } = useSocketClusterClient();
     const { addNotificationListener, removeNotificationListener } = useNotification();
-    const startingDate = subDays(new Date(currentDate), 2);
-    const datesWhitelist = [new Date(), { start: startOfYear(new Date()), end: endOfYear(new Date()) }];
-    const todayString = format(new Date(currentDate), 'EEEE');
-    const activeCurrentOrders = currentOrders.filter((order) => !['completed', 'created', 'canceled'].includes(order.getAttribute('status')));
-    const stops = countStops(activeCurrentOrders);
-    const distance = sumDistance(activeCurrentOrders);
-    const duration = sumDuration(activeCurrentOrders);
+    const startingDate = useMemo(() => subDays(new Date(currentDate), 2), [currentDate]);
+    const datesWhitelist = useMemo(() => [new Date(), { start: startOfYear(new Date()), end: endOfYear(new Date()) }], []);
+    const todayString = useMemo(() => format(new Date(currentDate), 'EEEE'), [currentDate]);
+    const { stops, distance, duration } = useMemo(() => {
+        const activeCurrentOrders = currentOrders.filter((order) => !['completed', 'created', 'canceled'].includes(order.getAttribute('status')));
+        return { stops: countStops(activeCurrentOrders), distance: sumDistance(activeCurrentOrders), duration: sumDuration(activeCurrentOrders) };
+    }, [currentOrders]);
+    const listedOrders = useMemo(() => [...nearbyOrders, ...currentOrders], [nearbyOrders, currentOrders]);
 
     useEffect(() => {
         const handlePushNotification = async (notification, action) => {
@@ -155,28 +156,31 @@ const DriverOrderManagementScreen = () => {
         reloadCurrentOrders();
     }, [reloadNearbyOrders, reloadCurrentOrders]);
 
-    const renderOrder = ({ item: order }) => {
-        const isAdhocOrder = order.getAttribute('adhoc') === true && order.getAttribute('driver_assigned') === null;
-        if (isAdhocOrder) {
-            if (dismissedOrders.includes(order.id)) return;
+    const renderOrder = useCallback(
+        ({ item: order }) => {
+            const isAdhocOrder = order.getAttribute('adhoc') === true && order.getAttribute('driver_assigned') === null;
+            if (isAdhocOrder) {
+                if (dismissedOrders.includes(order.id)) return;
+                return (
+                    <YStack px='$2' py='$4'>
+                        <AdhocOrderCard
+                            order={order}
+                            onPress={() => navigation.navigate('OrderModal', { order: order.serialize() })}
+                            onDismiss={handleAdhocDismissal}
+                            onAccept={handleAdhocAccept}
+                        />
+                    </YStack>
+                );
+            }
+
             return (
                 <YStack px='$2' py='$4'>
-                    <AdhocOrderCard
-                        order={order}
-                        onPress={() => navigation.navigate('OrderModal', { order: order.serialize() })}
-                        onDismiss={handleAdhocDismissal}
-                        onAccept={handleAdhocAccept}
-                    />
+                    <OrderCard order={order} onPress={() => navigation.navigate('Order', { order: order.serialize() })} />
                 </YStack>
             );
-        }
-
-        return (
-            <YStack px='$2' py='$4'>
-                <OrderCard order={order} onPress={() => navigation.navigate('Order', { order: order.serialize() })} />
-            </YStack>
-        );
-    };
+        },
+        [dismissedOrders, navigation, handleAdhocDismissal, handleAdhocAccept]
+    );
 
     const ActiveOrders = () => {
         if (!allActiveOrders.length) return;
@@ -290,7 +294,7 @@ const DriverOrderManagementScreen = () => {
                 </XStack>
             </YStack>
             <FlatList
-                data={[...nearbyOrders, ...currentOrders]}
+                data={listedOrders}
                 keyExtractor={(order, index) => order.id.toString() + '_' + index}
                 renderItem={renderOrder}
                 refreshControl={<RefreshControl refreshing={isFetchingCurrentOrders} onRefresh={reloadCurrentOrders} tintColor={theme['$blue-500'].val} />}

@@ -8,7 +8,6 @@ const DriverMarker = ({ driver, onPositionChange, onHeadingChange, onMovement, .
     const markerRef = useRef();
     const listenerRef = useRef();
     const handleEvent = useCallback((data) => {
-        console.log('Incoming data:', data);
         const movementData = { data };
 
         if (data.location && data.location.coordinates) {

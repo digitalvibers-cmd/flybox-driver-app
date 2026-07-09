@@ -183,4 +183,6 @@ export const OrderCard = ({ order, onPress }) => {
     );
 };
 
-export default OrderCard;
+// Memoized on order identity: callers pass inline onPress closures, but those only
+// capture the same order reference, so skipping re-render when it is unchanged is safe.
+export default React.memo(OrderCard, (prev, next) => prev.order === next.order);
