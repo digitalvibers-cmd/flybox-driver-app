@@ -3,6 +3,7 @@ import Geolocation from '@react-native-community/geolocation';
 import BackgroundFetch from 'react-native-background-fetch';
 import { Place, Point } from '@fleetbase/sdk';
 import { isEmpty } from '../utils';
+import { haversine } from '../utils/math';
 import { useAuth } from './AuthContext';
 import useStorage from '../hooks/use-storage';
 import useFleetbase from '../hooks/use-fleetbase';
@@ -10,6 +11,11 @@ import { ensureLocationPermissions, startLocationService, stopLocationService, a
 
 // Configure the foreground geolocation library (used for one-shot current-position reads).
 Geolocation.setRNConfiguration({ skipPermissionRequests: false, authorizationLevel: 'whenInUse', locationProvider: 'auto' });
+
+// Throttle for pushing positions to the API: send at most every 30s, unless the
+// driver moved more than 50m since the last sent fix.
+const TRACK_MIN_INTERVAL_MS = 30_000;
+const TRACK_MIN_DISTANCE_M = 50;
 
 const LocationContext = createContext({
     location: null,
@@ -32,13 +38,35 @@ export const LocationProvider = ({ children }) => {
         trackDriverRef.current = trackDriver;
     }, [trackDriver]);
 
+    // Last position actually sent to the API — used to throttle track() calls.
+    const lastSentRef = useRef({ timestamp: 0, coords: null });
+
+    // Push a position to the API only if enough time has passed or the driver
+    // moved far enough since the last sent fix. Local state still updates on
+    // every fix, so this only reduces network traffic, not UI freshness.
+    const sendTrackedPosition = useCallback((coords, { force = false } = {}) => {
+        const { timestamp, coords: lastCoords } = lastSentRef.current;
+        const elapsedMs = Date.now() - timestamp;
+        const movedMeters = lastCoords ? haversine([coords.latitude, coords.longitude], [lastCoords.latitude, lastCoords.longitude]) : Infinity;
+
+        if (!force && elapsedMs < TRACK_MIN_INTERVAL_MS && movedMeters < TRACK_MIN_DISTANCE_M) {
+            return;
+        }
+
+        lastSentRef.current = { timestamp: Date.now(), coords: { latitude: coords.latitude, longitude: coords.longitude } };
+        Promise.resolve(trackDriverRef.current(coords)).catch((err) => {
+            console.warn('[LocationTracking] failed to push position to API:', err);
+        });
+    }, []);
+
     // Manually read the current location once (foreground) and push it to the API.
     const trackLocation = useCallback(async () => {
         return new Promise((resolve) => {
             Geolocation.getCurrentPosition(
                 (position) => {
                     setLocation(position);
-                    trackDriverRef.current(position.coords);
+                    // Manual one-shot reads (background fetch, initial fix) always send.
+                    sendTrackedPosition(position.coords, { force: true });
                     resolve(position);
                 },
                 (error) => {
@@ -48,7 +76,7 @@ export const LocationProvider = ({ children }) => {
                 { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
             );
         });
-    }, [setLocation]);
+    }, [setLocation, sendTrackedPosition]);
 
     // Get the drivers location as a Place
     const getDriverLocationAsPlace = useCallback(
@@ -86,9 +114,9 @@ export const LocationProvider = ({ children }) => {
             };
 
             setLocation(position);
-            trackDriverRef.current(position.coords);
+            sendTrackedPosition(position.coords);
         },
-        [setLocation]
+        [setLocation, sendTrackedPosition]
     );
 
     // Function to start tracking (permissions -> native listener -> foreground service).

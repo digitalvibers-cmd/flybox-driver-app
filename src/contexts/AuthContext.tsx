@@ -115,12 +115,14 @@ export const AuthProvider = ({ children }) => {
         [state.driver]
     );
 
-    // Track driver position and other position related data
+    // Track driver position and other position related data.
+    // Deliberately no setDriver() here: track() fires on every GPS fix while driving,
+    // and a state update would re-render every AuthContext consumer each time.
+    // Live position for the UI comes from LocationContext, not the driver resource.
     const trackDriver = useCallback(
         async (data = {}) => {
             try {
-                const driver = await state.driver.track(data);
-                setDriver(driver);
+                return await state.driver.track(data);
             } catch (err) {
                 throw err;
             }
