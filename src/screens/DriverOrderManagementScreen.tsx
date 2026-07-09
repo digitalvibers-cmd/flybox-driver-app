@@ -38,8 +38,10 @@ const sumDistance = (orders = []) =>
         return total + order.getAttribute('distance');
     }, 0);
 
-const REFRESH_NEARBY_ORDERS_MS = 6000 * 5; // 5 mins
-const REFRESH_ORDERS_MS = 6000 * 15; // 15 mins
+// Polling is a fallback only — the `driver.{id}` socket channel pushes
+// `order.ping` / `order.ready` events for the real-time path.
+const REFRESH_NEARBY_ORDERS_MS = 60 * 1000; // 60s
+const REFRESH_ORDERS_MS = 90 * 1000; // 90s
 const DriverOrderManagementScreen = () => {
     const theme = useTheme();
     const navigation = useNavigation();

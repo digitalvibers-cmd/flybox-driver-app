@@ -160,8 +160,8 @@ class LocationTrackingService : Service() {
 
         private const val CHANNEL_ID = "flybox_location_tracking"
         private const val NOTIFICATION_ID = 51423
-        private const val UPDATE_INTERVAL_MS = 10_000L
-        private const val FASTEST_INTERVAL_MS = 5_000L
-        private const val MIN_DISPLACEMENT_M = 10f
+        private const val UPDATE_INTERVAL_MS = 15_000L
+        private const val FASTEST_INTERVAL_MS = 10_000L
+        private const val MIN_DISPLACEMENT_M = 25f
     }
 }
