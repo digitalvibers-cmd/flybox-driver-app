@@ -1,20 +1,17 @@
-name: FlyBox Driver — Build & Distribute APK
+name: FlyBox Driver — Build & Distribute APK (PROD)
 
-# Builds a signed release APK on every push to flybox/main (or manual run) and
-# uploads it to the Hetzner server, served by nginx at:
-#   https://fleetvibe.digitalvibe.rs/app/flybox-driver.apk
-# The APK targets the DEV API (apifleetvibe.digitalvibe.rs). For prod, change
-# FLEETBASE_HOST below and host on the flybox.rs domain.
+# Manual-only promotion to production. Builds a signed release APK that targets
+# the PROD API (api.flybox.rs) and uploads it to the Hetzner server, served by
+# nginx at:
+#   https://flybox.rs/app/flybox-driver.apk
+# Run it from flybox/main only after the same code has been verified via the
+# DEV build (flybox-apk.yml → fleetvibe.digitalvibe.rs).
 
 on:
-  push:
-    branches: [flybox/main]
-    paths-ignore:
-      - '**.md'
   workflow_dispatch:
 
 concurrency:
-  group: flybox-apk
+  group: flybox-apk-prod
   cancel-in-progress: true
 
 jobs:
@@ -46,21 +43,25 @@ jobs:
           if(s.includes(m)){s=s.replace(m,\"const _rp=require('@react-native-community/cli').run(name);return process.argv.includes('config')?_rp.then(()=>process.exit(0)):_rp;\");fs.writeFileSync(f,s);console.log('cli.js patched');}else{console.log('cli.js marker not found — skipping');}
           "
 
-      - name: Create .env
+      - name: Create .env (PROD)
         env:
-          FLEETBASE_KEY: ${{ secrets.FLEETBASE_KEY }}
+          FLEETBASE_KEY: ${{ secrets.FLEETBASE_KEY_PROD }}
           GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
         run: |
+          if [ -z "$FLEETBASE_KEY" ]; then
+            echo "::error::FLEETBASE_KEY_PROD secret is not set — create an API key in the PROD console (console.flybox.rs → Developers → API Keys) and add it as a repo secret."
+            exit 1
+          fi
           APP_VERSION=$(node -p "require('./package.json').version")
           {
             echo "APP_NAME=FlyBox Driver"
             echo "APP_IDENTIFIER=io.fleetbase.navigator"
             echo "APP_LINK_PREFIX=flbnavigator"
-            echo "FLEETBASE_HOST=https://apifleetvibe.digitalvibe.rs"
+            echo "FLEETBASE_HOST=https://api.flybox.rs"
             echo "FLEETBASE_KEY=$FLEETBASE_KEY"
             # Without these the app falls back to the SDK default socket.fleetbase.io
             # and real-time events (order.ping/ready, chat) silently never arrive.
-            echo "SOCKETCLUSTER_HOST=apifleetvibe.digitalvibe.rs"
+            echo "SOCKETCLUSTER_HOST=api.flybox.rs"
             echo "SOCKETCLUSTER_PORT=443"
             echo "SOCKETCLUSTER_SECURE=true"
             echo "GOOGLE_MAPS_API_KEY=$GOOGLE_MAPS_API_KEY"
@@ -68,7 +69,7 @@ jobs:
             # Minutes since epoch: monotonically increasing and consistent across
             # the dev and prod workflows, so any newer build installs as an update.
             echo "ANDROID_VERSION_CODE=$(( $(date +%s) / 60 ))"
-            echo "ANDROID_VERSION_NAME=${APP_VERSION}-dev.${{ github.run_number }}"
+            echo "ANDROID_VERSION_NAME=${APP_VERSION}-prod.${{ github.run_number }}"
           } > .env
 
       - name: Write google-services.json
@@ -102,7 +103,7 @@ jobs:
           ANDROID_NAVIGATOR_APP_UPLOAD_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: ./gradlew assembleRelease -PreactNativeArchitectures=armeabi-v7a,arm64-v8a --no-daemon --stacktrace
 
-      - name: Publish APK to server (nginx /app)
+      - name: Publish APK to server (nginx /app, PROD dir)
         env:
           DEPLOY_KEY: ${{ secrets.APK_DEPLOY_SSH_KEY }}
         run: |
@@ -112,14 +113,14 @@ jobs:
           APK=android/app/build/outputs/apk/release/app-release.apk
           ls -la "$APK"
           scp -i ~/.ssh/apk_deploy -o StrictHostKeyChecking=accept-new -o ConnectTimeout=20 \
-            "$APK" deploy@46.225.99.48:/opt/fleetvibe-apk/flybox-driver.apk
+            "$APK" deploy@46.225.99.48:/opt/fleetvibe-apk-prod/flybox-driver.apk
           scp -i ~/.ssh/apk_deploy -o StrictHostKeyChecking=accept-new -o ConnectTimeout=20 \
-            "$APK" deploy@46.225.99.48:/opt/fleetvibe-apk/flybox-driver-build${{ github.run_number }}.apk
-          echo "✅ Published: https://fleetvibe.digitalvibe.rs/app/flybox-driver.apk"
+            "$APK" deploy@46.225.99.48:/opt/fleetvibe-apk-prod/flybox-driver-build${{ github.run_number }}.apk
+          echo "✅ Published: https://flybox.rs/app/flybox-driver.apk"
 
       - name: Upload APK artifact (fallback)
         uses: actions/upload-artifact@v4
         with:
-          name: flybox-driver-apk
+          name: flybox-driver-apk-prod
           path: android/app/build/outputs/apk/release/app-release.apk
           retention-days: 60

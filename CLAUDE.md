@@ -342,24 +342,33 @@ Tracked in `/Users/buco/.claude/plans/zelim-da-analiziras-i-glistening-pearl.md`
 
 ## CI/CD & Distribution
 
-The app is distributed **as an APK** (no Play Store). On every push to `flybox/main` (or a manual `workflow_dispatch`), `.github/workflows/flybox-apk.yml` builds a **signed** release APK and uploads it to the Hetzner server, served by nginx at a fixed link:
+The app is distributed **as an APK** (no Play Store). Two workflows, one per environment:
 
-- **Driver download link (DEV build):** https://fleetvibe.digitalvibe.rs/app/flybox-driver.apk
-- Versioned copies: `…/app/flybox-driver-build<run_number>.apk`
+| Workflow | Trigger | API | Download link | Server dir |
+|----------|---------|-----|---------------|------------|
+| `flybox-apk.yml` (DEV) | push to `flybox/main` or manual | `apifleetvibe.digitalvibe.rs` | https://fleetvibe.digitalvibe.rs/app/flybox-driver.apk | `/opt/fleetvibe-apk/` |
+| `flybox-apk-prod.yml` (PROD) | **manual only** (`workflow_dispatch`) | `api.flybox.rs` | https://flybox.rs/app/flybox-driver.apk | `/opt/fleetvibe-apk-prod/` |
 
-CI build details: targets the **DEV** API (`FLEETBASE_HOST=https://apifleetvibe.digitalvibe.rs`); builds only `armeabi-v7a,arm64-v8a` (real phones, no x86 bloat); Node 20 + yarn 4.16.0 (via `yarnPath`); JDK 17; Android SDK 35 + NDK 27.1.12297006. It re-applies the `cli.js` autolink-exit patch as a safety step.
+Both publish versioned copies too (`…/app/flybox-driver-build<run_number>.apk`) — useful for emergency link rollback (`cp` the old build over `flybox-driver.apk` on the server). Standard rollback is `git revert` + rebuild, so versionCode keeps increasing and phones update normally.
+
+CI build details (both workflows): builds only `armeabi-v7a,arm64-v8a` (real phones, no x86 bloat); R8 minification + resource shrinking enabled (keep rules in `android/app/proguard-rules.pro`); Node 20 + yarn 4.16.0 (via `yarnPath`); JDK 17; Android SDK 35 + NDK 27.1.12297006. It re-applies the `cli.js` autolink-exit patch as a safety step.
+
+Two `.env` gotchas the workflows handle (don't remove):
+- **`SOCKETCLUSTER_HOST/PORT/SECURE` must be set** — otherwise the app silently falls back to the SDK default `socket.fleetbase.io` and real-time events (order.ping/ready, chat) never arrive (`src/contexts/ConfigContext.tsx`). Value = the env's API domain, port 443, secure (nginx proxies `/socketcluster/` to the SocketCluster port).
+- **`ANDROID_VERSION_CODE`** is set to minutes-since-epoch — monotonically increasing and consistent across both workflows, so any newer build (dev or prod) installs over any older one. `ANDROID_VERSION_NAME` = `<package.json version>-<env>.<run_number>`.
 
 ### Signing keystore (CRITICAL — back it up)
 Every build (local and CI) is signed with the **same** keystore `~/flybox-test.keystore` (alias `flybox`, store/key pass `flybox123`). Android only allows updating an installed app when the new APK is signed with the **same key**, so this keystore must never change and **must be backed up**. If lost, drivers would have to uninstall before installing a new build. No Play Store upload key is needed (we don't ship via the Store).
 
 ### GitHub secrets (repo `digitalvibers-cmd/flybox-driver-app`)
-`ANDROID_KEYSTORE_BASE64` (base64 of the keystore), `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`, `FLEETBASE_KEY`, `GOOGLE_MAPS_API_KEY`, `GOOGLE_SERVICES_JSON` (placeholder content; `google-services.json` is gitignored), `APK_DEPLOY_SSH_KEY` (private key; its public half is in the server `deploy` user's `authorized_keys`). `build.gradle` reads the keystore via `ANDROID_NAVIGATOR_APP_UPLOAD_STORE_FILE/STORE_PASSWORD/KEY_ALIAS/KEY_PASSWORD` (falls back to debug keystore when unset).
+`ANDROID_KEYSTORE_BASE64` (base64 of the keystore), `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`, `FLEETBASE_KEY` (dev API key), `FLEETBASE_KEY_PROD` (prod API key — ApiCredential "mob app prod" in the prod DB, created via tinker; visible in prod console → Developers → API Keys), `GOOGLE_MAPS_API_KEY`, `GOOGLE_SERVICES_JSON` (placeholder content; `google-services.json` is gitignored), `APK_DEPLOY_SSH_KEY` (private key; its public half is in the server `deploy` user's `authorized_keys`). `build.gradle` reads the keystore via `ANDROID_NAVIGATOR_APP_UPLOAD_STORE_FILE/STORE_PASSWORD/KEY_ALIAS/KEY_PASSWORD` (falls back to debug keystore when unset).
 
 ### Server hosting (one-time, root SSH `46.225.99.48`)
-`/opt/fleetvibe-apk/` (owned by `deploy`) holds the APKs; nginx vhost `fleetvibe-console` has a `location /app/ { alias /opt/fleetvibe-apk/; … apk mime … }` block. The workflow `scp`s the APK there as `deploy`.
+`/opt/fleetvibe-apk/` and `/opt/fleetvibe-apk-prod/` (owned by `deploy`) hold the APKs. nginx `location /app/ { alias …; apk mime; }` blocks: dev in vhost `fleetvibe-console`, prod in vhost `flybox-portal.conf` (`server_name flybox.rs` — the location block takes precedence over the portal proxy). The workflows `scp` the APK there as `deploy`.
 
-### Cut a release / switch to PROD
-Release = push to `flybox/main` or Actions → "FlyBox Driver — Build & Distribute APK" → Run workflow. For PROD later: change `FLEETBASE_HOST` in the workflow to `https://api.flybox.rs` and host on a prod domain (own `/opt/…-apk` dir + nginx `location /app/` on the prod vhost). See `DISTRIBUCIJA.md` for how to share the link with drivers.
+### Cut a release
+DEV: push to `flybox/main` (auto) or Actions → "FlyBox Driver — Build & Distribute APK" → Run workflow.
+PROD (only after verifying the dev build): Actions → "FlyBox Driver — Build & Distribute APK (PROD)" → Run workflow on `flybox/main`, or `gh workflow run flybox-apk-prod.yml --ref flybox/main -R digitalvibers-cmd/flybox-driver-app`. See `DISTRIBUCIJA.md` for rollback options and how to share the link with drivers (drivers need accounts in the **prod** console).
 
 ## References
 
