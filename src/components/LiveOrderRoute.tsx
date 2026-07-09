@@ -156,18 +156,18 @@ const LiveOrderRoute = ({
             >
                 {driverAssigned && <DriverMarker driver={driverAssigned} onMovement={focusDriver} />}
                 {start && start?.id !== 'driver' && (
-                    <Marker coordinate={origin} centerOffset={markerOffset}>
+                    <Marker coordinate={origin} centerOffset={markerOffset} tracksViewChanges={false}>
                         <MarkerLabel icon={start?.id === 'driver' ? faTruck : null} label={formattedAddressFromPlace(start)} markerOffset={markerOffset} theme={theme} />
                         <LocationMarker size={markerSize} />
                     </Marker>
                 )}
                 {middleWaypoints.map((waypoint, idx) => (
-                    <Marker key={waypoint.id || idx} coordinate={waypoint.coordinate} centerOffset={markerOffset}>
+                    <Marker key={waypoint.id || idx} coordinate={waypoint.coordinate} centerOffset={markerOffset} tracksViewChanges={false}>
                         <MarkerLabel label={waypoint.address} markerOffset={markerOffset} theme={theme} />
                         <LocationMarker size={markerSize} />
                     </Marker>
                 ))}
-                <Marker coordinate={destination} centerOffset={markerOffset}>
+                <Marker coordinate={destination} centerOffset={markerOffset} tracksViewChanges={false}>
                     <MarkerLabel label={formattedAddressFromPlace(end)} markerOffset={{ width: 0, height: 5 }} theme={theme} />
                     <LocationMarker size={markerSize} />
                 </Marker>

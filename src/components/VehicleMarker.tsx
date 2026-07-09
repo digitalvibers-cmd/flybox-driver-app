@@ -9,7 +9,6 @@ const VehicleMarker = ({ vehicle, onPositionChange, onHeadingChange, onMovement,
     const markerRef = useRef();
     const listenerRef = useRef();
     const handleEvent = useCallback((data) => {
-        console.log('Incoming data:', data);
         const movementData = { data };
 
         if (data.location && data.location.coordinates) {
@@ -65,7 +64,6 @@ const VehicleMarker = ({ vehicle, onPositionChange, onHeadingChange, onMovement,
     );
 
     const [latitude, longitude] = getCoordinates(vehicle);
-    console.log(`${vehicle.id} coordinates: ${latitude} ${longitude}`);
     return <TrackingMarker ref={markerRef} coordinate={{ latitude, longitude }} imageSource={{ uri: vehicle.getAttribute('avatar_url') }} size={{ width: 50, height: 50 }} {...props} />;
 };
 

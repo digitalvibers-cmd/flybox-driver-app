@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
+import React, { createContext, useContext, useEffect, useState, useRef, useCallback, useMemo } from 'react';
 import { PermissionsAndroid, Platform } from 'react-native';
 import { Notifications } from 'react-native-notifications';
 import useStorage from '../hooks/use-storage';
@@ -22,14 +22,14 @@ export const NotificationProvider = ({ children }) => {
     const notificationListeners = useRef([]);
 
     // Function to add a listener
-    const addNotificationListener = (callback) => {
+    const addNotificationListener = useCallback((callback) => {
         notificationListeners.current.push(callback);
-    };
+    }, []);
 
     // Function to remove a listener
-    const removeNotificationListener = (callback) => {
+    const removeNotificationListener = useCallback((callback) => {
         notificationListeners.current = notificationListeners.current.filter((listener) => listener !== callback);
-    };
+    }, []);
 
     useEffect(() => {
         const registerRemoteNotifications = async () => {
@@ -41,7 +41,7 @@ export const NotificationProvider = ({ children }) => {
 
         // Foreground notification handler
         const notificationDisplayedListener = Notifications.events().registerNotificationReceivedForeground((notification, completion) => {
-            console.log('Notification received in foreground:', notification);
+            if (__DEV__) console.log('Notification received in foreground:', notification);
             setLastNotification(notification);
             setNotifications((prev) => [...prev, notification]);
 
@@ -53,7 +53,7 @@ export const NotificationProvider = ({ children }) => {
 
         // Notification opened handler
         const notificationOpenedListener = Notifications.events().registerNotificationOpened((notification, completion, action) => {
-            console.log('Notification opened:', notification);
+            if (__DEV__) console.log('Notification opened:', notification);
             setLastNotification(notification);
 
             // Notify all listeners (optional, based on use case)
@@ -65,7 +65,7 @@ export const NotificationProvider = ({ children }) => {
         // Remote notifications registered successfully
         const registeredListener = Notifications.events().registerRemoteNotificationsRegistered((event) => {
             setDeviceToken(event.deviceToken);
-            console.log('Device registered for remote notifications:', event.deviceToken);
+            if (__DEV__) console.log('Device registered for remote notifications:', event.deviceToken);
         });
 
         // Failed to register for remote notifications
@@ -82,9 +82,12 @@ export const NotificationProvider = ({ children }) => {
         };
     }, []);
 
-    return (
-        <NotificationContext.Provider value={{ notifications, lastNotification, deviceToken, addNotificationListener, removeNotificationListener }}>{children}</NotificationContext.Provider>
+    const value = useMemo(
+        () => ({ notifications, lastNotification, deviceToken, addNotificationListener, removeNotificationListener }),
+        [notifications, lastNotification, deviceToken, addNotificationListener, removeNotificationListener]
     );
+
+    return <NotificationContext.Provider value={value}>{children}</NotificationContext.Provider>;
 };
 
 export const useNotification = () => {

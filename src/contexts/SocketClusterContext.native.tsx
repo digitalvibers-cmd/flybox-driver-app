@@ -1,7 +1,12 @@
-import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react';
 import socketClusterClient from 'socketcluster-client';
 import { consumeAsyncIterator } from '../utils';
 import { useConfig } from './ConfigContext';
+
+// Info-level socket logging is dev-only; warnings stay on in release.
+const debug = (...args) => {
+    if (__DEV__) console.log(...args);
+};
 
 const SocketClusterContext = createContext(null);
 
@@ -29,12 +34,12 @@ export const SocketClusterProvider = ({ children }) => {
         // Define handlers for socket events
         const handleConnect = () => {
             setIsConnected(true);
-            console.log('Socket connected.');
+            debug('Socket connected.');
         };
 
         const handleDisconnect = () => {
             setIsConnected(false);
-            console.log('Socket disconnected.');
+            debug('Socket disconnected.');
         };
 
         const handleError = (err) => {
@@ -62,7 +67,7 @@ export const SocketClusterProvider = ({ children }) => {
             stopError();
 
             scSocket.disconnect();
-            console.log('Socket connection closed.');
+            debug('Socket connection closed.');
         };
     }, []);
 
@@ -81,12 +86,12 @@ export const SocketClusterProvider = ({ children }) => {
             try {
                 const channel = socket.subscribe(channelName);
                 if (channel.isSubscribed()) {
-                    console.log(`Already subscribed to channel "${channelName}".`);
+                    debug(`Already subscribed to channel "${channelName}".`);
                     return channel;
                 }
 
                 await channel.listener('subscribe').once();
-                console.log(`Subscribed to channel "${channelName}".`);
+                debug(`Subscribed to channel "${channelName}".`);
                 return channel;
             } catch (err) {
                 console.warn(`Failed to subscribe to channel "${channelName}":`, err);
@@ -109,7 +114,7 @@ export const SocketClusterProvider = ({ children }) => {
 
             try {
                 await socket.closeChannel(channelName);
-                console.log(`Gracefully closed channel "${channelName}".`);
+                debug(`Gracefully closed channel "${channelName}".`);
             } catch (err) {
                 console.warn(`Error while closing channel "${channelName}":`, err);
             }
@@ -130,7 +135,7 @@ export const SocketClusterProvider = ({ children }) => {
 
             try {
                 await socket.killChannel(channelName);
-                console.log(`Forcefully killed channel "${channelName}".`);
+                debug(`Forcefully killed channel "${channelName}".`);
             } catch (err) {
                 console.warn(`Error while killing channel "${channelName}":`, err);
             }
@@ -149,7 +154,7 @@ export const SocketClusterProvider = ({ children }) => {
 
         try {
             await socket.closeAllChannels();
-            console.log('Gracefully closed all channels.');
+            debug('Gracefully closed all channels.');
         } catch (err) {
             console.warn('Error while closing all channels:', err);
         }
@@ -166,28 +171,27 @@ export const SocketClusterProvider = ({ children }) => {
 
         try {
             await socket.killAllChannels();
-            console.log('Forcefully killed all channels.');
+            debug('Forcefully killed all channels.');
         } catch (err) {
             console.warn('Error while killing all channels:', err);
         }
     }, [socket]);
 
-    return (
-        <SocketClusterContext.Provider
-            value={{
-                socket,
-                isConnected,
-                error,
-                subscribeChannel,
-                closeChannel,
-                killChannel,
-                closeAllChannels,
-                killAllChannels,
-            }}
-        >
-            {children}
-        </SocketClusterContext.Provider>
+    const value = useMemo(
+        () => ({
+            socket,
+            isConnected,
+            error,
+            subscribeChannel,
+            closeChannel,
+            killChannel,
+            closeAllChannels,
+            killAllChannels,
+        }),
+        [socket, isConnected, error, subscribeChannel, closeChannel, killChannel, closeAllChannels, killAllChannels]
     );
+
+    return <SocketClusterContext.Provider value={value}>{children}</SocketClusterContext.Provider>;
 };
 
 /**

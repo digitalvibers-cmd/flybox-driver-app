@@ -165,4 +165,6 @@ export const AdhocOrderCard = ({ order, onPress, onAccept, onDismiss }) => {
     );
 };
 
-export default AdhocOrderCard;
+// Memoized on order identity: callers pass inline onPress closures, but those only
+// capture the same order reference, so skipping re-render when it is unchanged is safe.
+export default React.memo(AdhocOrderCard, (prev, next) => prev.order === next.order);

@@ -75,6 +75,8 @@ const CreateChatChannelScreen = ({ route }) => {
         }
     }, []);
 
+    const selectableParticipants = useMemo(() => availableParticipants.filter((user) => user.id !== driver.getAttribute('user')), [availableParticipants, driver]);
+
     const renderParticipant = ({ item: participant }) => {
         return (
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -156,7 +158,7 @@ const CreateChatChannelScreen = ({ route }) => {
                 </YStack>
             </TouchableWithoutFeedback>
             <FlatList
-                data={availableParticipants.filter((user) => user.id !== driver.getAttribute('user'))}
+                data={selectableParticipants}
                 keyExtractor={(item) => item.id}
                 keyboardShouldPersistTaps='always'
                 renderItem={renderParticipant}
