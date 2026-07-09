@@ -2,26 +2,39 @@
 
 Aplikacija se NE distribuira preko Google Play Store-a, već kao **APK fajl** koji vozači instaliraju ručno. APK se automatski build-uje (GitHub Actions) i hostuje na našem serveru.
 
-## Link za preuzimanje (uvek isti)
+## Linkovi za preuzimanje (uvek isti)
 
-**https://fleetvibe.digitalvibe.rs/app/flybox-driver.apk**
+| Okruženje | Link | Backend |
+|-----------|------|---------|
+| **PROD (za vozače)** | **https://flybox.rs/app/flybox-driver.apk** | `api.flybox.rs` |
+| DEV (za testiranje) | https://fleetvibe.digitalvibe.rs/app/flybox-driver.apk | `apifleetvibe.digitalvibe.rs` |
 
-Ovaj link uvek vraća **najnoviju** verziju. (Trenutno gађa DEV backend `apifleetvibe.digitalvibe.rs`.)
+Svaki link uvek vraća **najnoviju** verziju za svoje okruženje. Oba builda su potpisana istim ključem, pa se instaliraju jedan preko drugog — ali telefon u jednom trenutku ima ILI dev ILI prod aplikaciju (posle zamene vozač mora ponovo da se uloguje, jer su nalozi odvojeni po okruženju).
 
 ---
 
 ## Za Buca — kako podeliti / objaviti novu verziju
 
-### Objava nove verzije
+### Objava nove DEV verzije (automatski)
 1. Push na granu `flybox/main` (bilo koja izmena koda) **ili** ručno: GitHub → repo `flybox-driver-app` → **Actions** → "FlyBox Driver — Build & Distribute APK" → **Run workflow**.
-2. Kad workflow postane zelen (~10–20 min), gornji link automatski servira novi build. Ne treba ništa ručno.
+2. Kad workflow postane zelen (~10–20 min), dev link automatski servira novi build.
+
+### Promocija na PROD (ručno, tek posle provere na dev-u)
+1. Proveri novi build preko dev linka (instalacija, login, osnovni flow).
+2. GitHub → **Actions** → **"FlyBox Driver — Build & Distribute APK (PROD)"** → **Run workflow** (grana `flybox/main`). Ili iz terminala: `gh workflow run flybox-apk-prod.yml --ref flybox/main -R digitalvibers-cmd/flybox-driver-app`.
+3. Kad je zelen, prod link servira novi build. Provera: `curl -I https://flybox.rs/app/flybox-driver.apk` (svež `Last-Modified`).
+
+### Revert (vraćanje na prethodnu verziju)
+1. **Standardno — `git revert`**: revertuj sporne commite na `flybox/main`, push → dev build se sam objavi; za prod ponovo pokreni prod workflow. Verzija raste, pa se instalira kao običan update.
+2. **Hitno (samo link, za nove instalacije)**: na serveru ostaju verzionisane kopije — `cp /opt/fleetvibe-apk-prod/flybox-driver-build<N>.apk /opt/fleetvibe-apk-prod/flybox-driver.apk` (za dev: `/opt/fleetvibe-apk/`). Telefoni sa već instaliranom novijom verzijom ne mogu downgrade bez deinstalacije — za njih koristi git revert.
+3. Ručno: `gh workflow run <workflow> --ref <stariji-tag-ili-grana>`.
 
 ### Deljenje linka vozačima
-Pošalji vozačima link preko **WhatsApp / Viber / SMS**, sa kratkim uputstvom (šablon ispod). Opciono mogu da napravim i **QR kod** linka (slika) da ga vozači samo skeniraju kamerom.
+Pošalji vozačima **PROD** link preko **WhatsApp / Viber / SMS**, sa kratkim uputstvom (šablon ispod). Opciono mogu da napravim i **QR kod** linka (slika) da ga vozači samo skeniraju kamerom. Vozač mora imati nalog u **prod** konzoli (console.flybox.rs).
 
 **Šablon poruke vozaču:**
 > Pozdrav! Instaliraj FlyBox Driver aplikaciju sa ovog linka:
-> https://fleetvibe.digitalvibe.rs/app/flybox-driver.apk
+> https://flybox.rs/app/flybox-driver.apk
 > Otvori link u **Chrome** pregledaču na telefonu, preuzmi fajl i instaliraj ga (telefon će tražiti dozvolu — odobri je). Detaljno uputstvo je u nastavku. Posle instalacije se prijaviš svojim brojem telefona.
 
 ---
@@ -29,7 +42,7 @@ Pošalji vozačima link preko **WhatsApp / Viber / SMS**, sa kratkim uputstvom (
 ## Za vozača — instalacija (Android, prvi put)
 
 1. Otvori link u **Chrome**-u na telefonu:
-   **https://fleetvibe.digitalvibe.rs/app/flybox-driver.apk**
+   **https://flybox.rs/app/flybox-driver.apk**
 2. Počeće preuzimanje fajla `flybox-driver.apk`. Kad se završi, tapni na notifikaciju o preuzimanju (ili otvori **Files / Moji fajlovi → Downloads** i tapni fajl).
 3. Telefon će pitati: **"Allow Chrome to install unknown apps?"** (Dozvoli instalaciju iz nepoznatih izvora) → uključi prekidač i vrati se nazad.
    - _(Na nekim telefonima ovo se pojavi pod Podešavanja → Aplikacije → Chrome → "Instaliraj nepoznate aplikacije".)_
@@ -58,7 +71,7 @@ Pošto APK ne dolazi sa Play Store-a, Android ga podrazumevano blokira dok ne uk
    - MIUI pri instalaciji "skenira" aplikaciju i ima ~10s odbrojavanje — sačekaj, pa **"Install anyway / Instaliraj svejedno"**.
    - Ako i dalje blokira: Podešavanja → Dodatna podešavanja → Developer options → isključi "MIUI optimization" (retko potrebno; vrati posle).
 
-5. **Dovoljno slobodne memorije** — najmanje **~300–500 MB** slobodno (APK je ~92 MB, a pri instalaciji se raspakuje i zauzima više). Ako javi "App not installed / Aplikacija nije instalirana", najčešće je razlog premalo prostora → oslobodi i probaj ponovo.
+5. **Dovoljno slobodne memorije** — najmanje **~300–500 MB** slobodno (APK je ~41 MB, a pri instalaciji se raspakuje i zauzima više). Ako javi "App not installed / Aplikacija nije instalirana", najčešće je razlog premalo prostora → oslobodi i probaj ponovo.
 
 6. **Preuzimanje u pregledaču** — otvori link u **Chrome**-u (ne u in-app pregledaču iz WhatsApp/Viber-a). Ako se link otvori kao tekst umesto da se preuzme: drži prst na linku → **"Download link / Sačuvaj link"**.
 
