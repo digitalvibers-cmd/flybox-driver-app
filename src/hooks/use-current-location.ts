@@ -109,7 +109,7 @@ const useCurrentLocation = () => {
         return () => {
             clearInterval(intervalId);
         };
-    }, []);
+    }, [initializeLiveLocation]);
 
     // On mount and when currentLocation changes, initialize the current location if not set.
     useEffect(() => {

@@ -101,7 +101,7 @@ const DriverOrderManagementScreen = () => {
 
             const interval = setInterval(handleReloadNearbyOrders, REFRESH_NEARBY_ORDERS_MS);
             return () => clearInterval(interval);
-        }, [])
+        }, [reloadNearbyOrders])
     );
 
     useFocusEffect(
@@ -114,7 +114,7 @@ const DriverOrderManagementScreen = () => {
 
             const interval = setInterval(handleReloadCurrentOrders, REFRESH_ORDERS_MS);
             return () => clearInterval(interval);
-        }, [currentDate])
+        }, [currentDate, reloadCurrentOrders, reloadActiveOrders])
     );
 
     useFocusEffect(

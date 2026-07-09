@@ -241,7 +241,7 @@ export const OrderManagerProvider: React.FC = ({ children }) => {
             fetchRecentOrders(params, options);
             fetchNearbyOrders(params, options);
         },
-        [fetchActiveOrders, fetchRecentOrders]
+        [fetchActiveOrders, fetchRecentOrders, fetchNearbyOrders]
     );
 
     const reloadRecentOrders = useCallback(
@@ -275,7 +275,7 @@ export const OrderManagerProvider: React.FC = ({ children }) => {
         (params = {}, options = {}) => {
             hasLoadedNearbyRef.current = false;
             nearbyOrdersPromiseRef.current = null;
-            fetchNearbyOrders(params);
+            fetchNearbyOrders(params, options);
         },
         [fetchNearbyOrders]
     );
@@ -298,6 +298,7 @@ export const OrderManagerProvider: React.FC = ({ children }) => {
             isFetchingActiveOrders,
             isFetchingRecentOrders,
             isFetchingCurrentOrders,
+            isFetchingNearbyOrders,
             activeOrderMarkedDates,
             updateStorageOrder,
             fetchNearbyOrders,
@@ -316,9 +317,13 @@ export const OrderManagerProvider: React.FC = ({ children }) => {
             nearbyOrders,
             adapter,
             reloadOrders,
+            reloadRecentOrders,
+            reloadActiveOrders,
+            reloadCurrentOrders,
             isFetchingActiveOrders,
             isFetchingRecentOrders,
             isFetchingCurrentOrders,
+            isFetchingNearbyOrders,
             activeOrderMarkedDates,
             fetchNearbyOrders,
             reloadNearbyOrders,
