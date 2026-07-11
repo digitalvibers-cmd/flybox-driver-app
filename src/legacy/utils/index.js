@@ -26,7 +26,7 @@ import {
 import { calculatePercentage, haversine } from './Calculate';
 import { syncDevice } from './Auth';
 import { formatCurrency, capitalize, pluralize, formatDuration, formatKm, formatMetersToKilometers, formatMetaValue, titleize, humanize, getStatusColors } from './Format';
-import { geocode, getCurrentLocation, getLocation, getDistance } from './Geo';
+import { getCurrentLocation, getLocation, getDistance } from './Geo';
 import { translate } from './Localize';
 import getCurrency from './get-currency';
 
@@ -138,7 +138,6 @@ export {
     formatKm,
     formatMetersToKilometers,
     getStatusColors,
-    geocode,
     getCurrentLocation,
     getLocation,
     mutatePlaces,

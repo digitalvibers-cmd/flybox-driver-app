@@ -5,137 +5,18 @@ import { checkMultiple, request, PERMISSIONS, RESULTS } from 'react-native-permi
 import { GoogleAddress, Place, Point } from '@fleetbase/sdk';
 import { StoreLocation } from '@fleetbase/storefront';
 import { haversine } from './math';
-import { config, uniqueArray, isObject, isArray, isEmpty, isResource, isSerializedResource, isPojoResource } from './';
+import { config, uniqueArray, isObject, isArray, isResource, isSerializedResource, isPojoResource } from './';
 import storage from './storage';
-import axios from 'axios';
 
 const emit = EventRegister.emit;
 
+// NOTE: this module must never call Google web services (geocode/autocomplete/place details)
+// directly from the device — every request, including failed ones, is billable. Places are
+// built from raw GPS coordinates; if an address is ever needed, use the backend's cached
+// `geocoder/reverse` endpoint instead.
+
 export function createGoogleAddress(...args) {
     return new GoogleAddress(...args);
-}
-
-export async function geocode(latitude, longitude, options = {}) {
-    if (!latitude || !longitude) {
-        const fallbackCoordinates = getDefaultCoordinates();
-        latitude = fallbackCoordinates.latitude;
-        longitude = fallbackCoordinates.longitude;
-    }
-
-    try {
-        const response = await axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
-            params: {
-                latlng: `${latitude},${longitude}`,
-                sensor: false,
-                language: 'en-US',
-                key: config('GOOGLE_MAPS_API_KEY'),
-            },
-        });
-
-        if (isEmpty(response.data.results)) {
-            throw new Error('No geocode results for provided coordinates.');
-        }
-
-        // Allow full results
-        if (options.withAllResults === true) {
-            return response.data.results.map((result) => {
-                return options.asGoogleAddress === true ? new GoogleAddress(result) : result;
-            });
-        }
-
-        const result = response.data.results[0];
-        return options.asGoogleAddress === true ? new GoogleAddress(result) : result;
-    } catch (error) {
-        console.warn('Geocoding error:', error);
-        return null;
-    }
-}
-
-export async function geocodeAutocomplete(input, coordinates = null) {
-    try {
-        const params = {
-            input,
-            // types: 'address', // Restrict results to addresses only
-            language: 'en-US',
-            key: config('GOOGLE_MAPS_API_KEY'),
-        };
-
-        if (isArray(coordinates)) {
-            params.location = `${coordinates[0]},${coordinates[1]}`;
-            params.radius = 5000; // 5km radius
-        }
-
-        const response = await axios.get('https://maps.googleapis.com/maps/api/place/autocomplete/json', {
-            params,
-        });
-
-        // Extract predictions from response
-        const predictions = response.data.predictions.map((prediction) => {
-            const segments = parseAutocompleteAddress(prediction.description);
-
-            return {
-                description: prediction.description,
-                place_id: prediction.place_id,
-                ...segments,
-            };
-        });
-
-        return predictions;
-    } catch (error) {
-        console.warn('Autocomplete error:', error);
-        return [];
-    }
-}
-
-export async function getPlaceDetails(placeId) {
-    try {
-        // Make a request to the Google Places Details API
-        const response = await axios.get('https://maps.googleapis.com/maps/api/place/details/json', {
-            params: {
-                place_id: placeId,
-                key: config('GOOGLE_MAPS_API_KEY'),
-                // You can include 'fields' to limit the data retrieved or omit it for all available details
-                fields: 'name,formatted_address,geometry,place_id,types,international_phone_number,website,address_components',
-            },
-        });
-
-        // Handle API response
-        if (response.data.status !== 'OK') {
-            throw new Error(`Google API Error: ${response.data.status}`);
-        }
-
-        // Return the full result object from Google
-        return response.data.result;
-    } catch (error) {
-        console.warn('Error fetching place details:', error.message);
-        return null;
-    }
-}
-
-export function createFleetbasePlaceFromDetails(details, meta = {}, adapter) {
-    const addressObject = parseAutocompleteAddress(details.formatted_address);
-    const placeObject = parsePlaceDetails(details);
-
-    const attributes = {
-        name: details.name ?? null,
-        street1: placeObject.street ?? addressObject.street,
-        city: placeObject.city ?? addressObject.city,
-        province: placeObject.state ?? addressObject.state,
-        postal_code: placeObject.postalCode ?? addressObject.postalCode,
-        neighborhood: placeObject.neighborhood,
-        building: placeObject.building,
-        security_access_code: null,
-        country: placeObject.country ?? addressObject.country,
-        location: new Point(placeObject.latitude, placeObject.longitude),
-        phone: null,
-        meta: {
-            ...meta,
-            coordinates: [placeObject.latitude, placeObject.longitude],
-            location: addressObject.others,
-        },
-    };
-
-    return new Place(attributes, adapter);
 }
 
 export function restoreFleetbasePlace(data, adapter) {
@@ -217,28 +98,18 @@ export function serializGoogleAddress(googleAddress) {
 export async function getLiveLocation(adapter) {
     return new Promise((resolve) => {
         Geolocation.getCurrentPosition(
-            async (position) => {
+            (position) => {
                 const { latitude, longitude } = position.coords;
 
                 // Save the last known coordinates
                 storage.setArray('_last_known_position', [latitude, longitude]);
 
-                try {
-                    const details = await geocode(latitude, longitude);
-                    const place = createFleetbasePlaceFromDetails(details, { position }, adapter);
+                const place = new Place({ location: new Point(latitude, longitude), meta: { position } });
 
-                    // Save the last known location
-                    storage.setMap('_last_known_location', place.serialize());
+                // Save the last known location
+                storage.setMap('_last_known_location', place.serialize());
 
-                    resolve(place);
-                } catch (error) {
-                    const place = new Place({ location: new Point(latitude, longitude), meta: { position } });
-
-                    // Save the last known location
-                    storage.setMap('_last_known_location', place.serialize());
-
-                    resolve(place);
-                }
+                resolve(place);
             },
             (error) => resolve(null),
             { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
@@ -251,7 +122,7 @@ export async function getCurrentLocation(adapter) {
 
     return new Promise((resolve) => {
         Geolocation.getCurrentPosition(
-            async (position) => {
+            (position) => {
                 const { latitude, longitude } = position.coords;
 
                 // Save the last known coordinates
@@ -262,18 +133,10 @@ export async function getCurrentLocation(adapter) {
                     return resolve(lastLocation);
                 }
 
-                try {
-                    const details = await geocode(latitude, longitude);
-                    const place = createFleetbasePlaceFromDetails(details, { position }, adapter);
+                const place = new Place({ location: new Point(latitude, longitude), meta: { position } });
 
-                    storage.setMap('_current_location', place.serialize());
-                    resolve(place);
-                } catch (error) {
-                    const place = new Place({ location: new Point(latitude, longitude), meta: { position } });
-
-                    storage.setMap('_current_location', place.serialize());
-                    resolve(place);
-                }
+                storage.setMap('_current_location', place.serialize());
+                resolve(place);
             },
             (error) => resolve(null),
             { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
