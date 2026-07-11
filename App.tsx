@@ -41,7 +41,6 @@ function AppContent(): React.JSX.Element {
                                                                 <Toasts extraInsets={{ bottom: 80 }} />
                                                                 <PortalHost name='MainPortal' />
                                                                 <PortalHost name='BottomSheetPanelPortal' />
-                                                                <PortalHost name='LocationPickerPortal' />
                                                             </OrderManagerProvider>
                                                         </ChatProvider>
                                                     </TempStoreProvider>
