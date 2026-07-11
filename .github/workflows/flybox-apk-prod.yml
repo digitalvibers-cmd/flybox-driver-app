@@ -52,6 +52,12 @@ jobs:
             echo "::error::FLEETBASE_KEY_PROD secret is not set — create an API key in the PROD console (console.flybox.rs → Developers → API Keys) and add it as a repo secret."
             exit 1
           fi
+          # The key only feeds the native Maps SDK (map tiles); an empty value ships a
+          # blank map to every driver, so fail the build instead of degrading silently.
+          if [ -z "$GOOGLE_MAPS_API_KEY" ]; then
+            echo "::error::GOOGLE_MAPS_API_KEY secret is not set — the APK would ship with a blank map. Add the Android-restricted Maps SDK key as a repo secret."
+            exit 1
+          fi
           APP_VERSION=$(node -p "require('./package.json').version")
           {
             echo "APP_NAME=FlyBox Driver"

@@ -93,22 +93,11 @@ const useCurrentLocation = () => {
         [updateDefaultLocation]
     );
 
-    // On mount (or when initializeLiveLocation changes), start live location updates.
+    // On mount (or when initializeLiveLocation changes), refresh the live location once.
+    // No polling — consumers only need a fresh fix when they mount, and screens stay
+    // mounted in the navigation stack for whole sessions.
     useEffect(() => {
-        // Immediately call the live location initializer on mount
         initializeLiveLocation();
-
-        // Then set an interval to update every 5 minutes (300,000ms)
-        const intervalId = setInterval(
-            () => {
-                initializeLiveLocation();
-            },
-            1000 * 60 * 5
-        );
-
-        return () => {
-            clearInterval(intervalId);
-        };
     }, [initializeLiveLocation]);
 
     // On mount and when currentLocation changes, initialize the current location if not set.
