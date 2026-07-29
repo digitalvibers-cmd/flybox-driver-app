@@ -94,3 +94,6 @@ navigator.config.js
 .tamagui
 vendor
 *.pxd
+
+# Internal ops doc — kept local, not published (contains keys/CI/infra notes)
+CLAUDE.md
